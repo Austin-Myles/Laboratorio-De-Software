@@ -11,8 +11,12 @@ public class EstrategiaGenocida implements Estrategia{
     * no queremos dejar nada con vida, solo optaremos por esta estrategia
     * cuando no queden menos de 3 robots, sin piedad, que corra sangre.
     */
-    @Override
     public void run() {
+
+    }
+
+    @Override
+    public void runB(LaboRobot robot) {
 
     }
 

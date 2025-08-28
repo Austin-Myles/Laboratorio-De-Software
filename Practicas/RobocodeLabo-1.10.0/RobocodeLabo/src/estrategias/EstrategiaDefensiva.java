@@ -15,8 +15,11 @@ public class EstrategiaDefensiva implements Estrategia{
 
     Run contiene todo el comportamiento predeterminado.
     * */
-    @Override
     public void run() {
+    }
+
+    @Override
+    public void runB(LaboRobot robot) {
 
     }
 

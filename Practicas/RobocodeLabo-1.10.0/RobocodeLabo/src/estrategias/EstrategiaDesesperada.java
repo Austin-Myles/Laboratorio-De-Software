@@ -12,9 +12,12 @@ public class EstrategiaDesesperada implements Estrategia{
     robot frente suyo solo se dará la vuelta.
 
     * */
+    public void run() {
+
+    }
 
     @Override
-    public void run() {
+    public void runB(LaboRobot robot) {
 
     }
 

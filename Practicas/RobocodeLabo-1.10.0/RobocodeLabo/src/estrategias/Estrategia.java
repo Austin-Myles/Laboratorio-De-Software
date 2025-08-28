@@ -6,9 +6,8 @@ import robocode.ScannedRobotEvent;
 import robocode.WinEvent;
 
 public interface Estrategia {
-    JuniorRobot robot = null;
 
-    void run();
+    void runB(LaboRobot robot);
     void onScannedRobot(ScannedRobotEvent e);
     void onHitByBullet();
     void onHitWall();

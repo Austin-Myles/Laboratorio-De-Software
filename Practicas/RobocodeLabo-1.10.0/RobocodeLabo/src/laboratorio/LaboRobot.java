@@ -8,21 +8,24 @@ public class LaboRobot extends JuniorRobot
     private Estrategia estrategia;
 
     public LaboRobot(Estrategia estrategia) {
+        setEstrategia(estrategia);
+    }
+
+    public void setEstrategia(Estrategia estrategia) {
         this.estrategia = estrategia;
         estrategia.setRobot(this);
     }
 
 	@Override	
 	public void run() {
-        estrategia.run(this);
+        estrategia.runB(this);
 	}
 
 	/**
 	 * onScannedRobot: What to do when you see another robot
 	 */
-	@Override
-	public void onScannedRobot() {
-		estrategia.onScannedRobot();
+	public void onScannedRobot(ScannedRobotEvent e) {
+		estrategia.onScannedRobot(e);
 	}
 
 	/**
@@ -40,5 +43,6 @@ public class LaboRobot extends JuniorRobot
 	@Override
 	public void onHitWall() {
 		estrategia.onHitByWall();
-	}	
+	}
+
 }

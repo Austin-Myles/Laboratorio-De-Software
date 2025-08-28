@@ -1,14 +1,16 @@
 package estrategias;
 
 import laboratorio.LaboRobot;
+import robocode.JuniorRobot;
 import robocode.ScannedRobotEvent;
 import robocode.WinEvent;
 import robocode.util.Utils;
 
 import java.awt.*;
 
-public class EstrategiaAgresiva extends JuniorRobot implements Estrategia{
+public class EstrategiaAgresiva implements Estrategia{
 
+    private LaboRobot robot;
     double anguloDisparo;
 
     /*La idea en este caso es que la estrategía sea ofensiva pero tampoco
@@ -22,6 +24,10 @@ public class EstrategiaAgresiva extends JuniorRobot implements Estrategia{
 
     @Override
     public void run() {
+    }
+
+    @Override
+    public void runB(LaboRobot robot) {
         // Elegimos los colores
         setBodyColor(new Color(279, 82, 45));
         setGunColor(new Color(150, 145, 165));
@@ -29,9 +35,11 @@ public class EstrategiaAgresiva extends JuniorRobot implements Estrategia{
         setScanColor(Color.white);
         setBulletColor(Color.red);
 
-        // Loopeamos
+        // Loopeamos su actividad común.
         while (true){
-            break;
+            robot.turnGunRight(360);  // siempre buscando al enemigo
+            robot.ahead(100);
+            robot.turnRight(30);
         }
     }
 
@@ -43,9 +51,9 @@ public class EstrategiaAgresiva extends JuniorRobot implements Estrategia{
     @Override
     public void onScannedRobot(ScannedRobotEvent e) {
         //Hay que arreglar las funciones porque no agarran bien...
-        anguloDisparo = Utils.normalRelativeAngleDegrees(e.getBearing() + (robot.heading() - robot.getRadarHeading()));
-        robot.turnGunRight(anguloDisparo);
-        robot.fire(1);
+        anguloDisparo = Utils.normalRelativeAngleDegrees(e.getBearing() + (this.robot.heading - this.robot.gunHeading));
+        this.robot.turnGunRight((int)(anguloDisparo));
+        this.robot.fire(1);
     }
 
     /*
@@ -58,14 +66,14 @@ public class EstrategiaAgresiva extends JuniorRobot implements Estrategia{
     * realizar un cambio de estrategia.*/
     @Override
     public void onHitByBullet() {
-        if(robot.energy <= 45){
+        if(this.robot.energy <= 45){
             //Hacemos el cambio de estrategia.
             analyzeStrategy();
         }
 
-        int anguloGolpe = robot.hitByBulletBearing;
-        robot.turnGunTo(anguloGolpe);
-        robot.fire(1);
+        int anguloGolpe = this.robot.hitByBulletBearing;
+        this.robot.turnGunTo(anguloGolpe);
+        this.robot.fire(1);
     }
 
     /*
@@ -75,17 +83,17 @@ public class EstrategiaAgresiva extends JuniorRobot implements Estrategia{
     * que nuevamente se golpee contra la pared. */
     @Override
     public void onHitWall() {
-        int anguloAct = robot.heading;
+        int anguloAct = this.robot.heading;
         int anguloNuevo = (anguloAct + 180) % 360;
 
-        robot.back(20);
-        robot.turnTo(anguloNuevo);
-        robot.ahead(10);
+        this.robot.back(20);
+        this.robot.turnTo(anguloNuevo);
+        this.robot.ahead(10);
     }
 
     @Override
     public void setRobot(LaboRobot robot) {
-
+        this.robot = robot;
     }
 
     /*
@@ -94,8 +102,21 @@ public class EstrategiaAgresiva extends JuniorRobot implements Estrategia{
     * en el mapa.*/
     @Override
     public void analyzeStrategy() {
-
+        if (this.robot.energy <= 25 && this.robot.others <= 3) {
+            // Caso más extremo: poca vida y pocos enemigos
+            this.robot.setEstrategia(new EstrategiaGenocida());
+            System.out.println("Jean Claude Van Dam en... Matar o Morir.");
+        } else if (this.robot.energy < 30 && this.robot.others >= 4) {
+            // Vida muy baja y muchos enemigos → desesperado
+            this.robot.setEstrategia(new EstrategiaDesesperada());
+            System.out.println("Energía muy baja, cambiando a estrategia Desesperada");
+        } else if (this.robot.energy <= 45) {
+            // Vida relativamente baja → defensivo
+            this.robot.setEstrategia(new EstrategiaDefensiva());
+            System.out.println("Energía baja, cambiando a estrategia Defensiva");
+        }
     }
+
 
     /*Baile de la victoria*/
     @Override
