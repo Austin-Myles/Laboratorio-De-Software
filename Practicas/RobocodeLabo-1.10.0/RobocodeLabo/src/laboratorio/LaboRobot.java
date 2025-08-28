@@ -42,7 +42,7 @@ public class LaboRobot extends JuniorRobot
 	 */
 	@Override
 	public void onHitWall() {
-		estrategia.onHitByWall();
+		estrategia.onHitWall();
 	}
 
 }

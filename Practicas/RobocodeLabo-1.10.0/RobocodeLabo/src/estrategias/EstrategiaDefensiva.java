@@ -7,7 +7,8 @@ import robocode.util.Utils;
 
 public class EstrategiaDefensiva implements Estrategia{
 
-
+    private LaboRobot robot;
+    double anguloDisparo;
     /*La idea en este caso es que la estrategía sea defensiva enfocandonos
     más en la movilidad que en el ataque. La idea es dar vueltas disparando
     solo cuando en nuestro sensor detectemos enemigos, pero no perseguiremos.
@@ -27,9 +28,9 @@ public class EstrategiaDefensiva implements Estrategia{
      * un robot en nuestro escaner, se disparará y se seguira adelante*/
     @Override
     public void onScannedRobot(ScannedRobotEvent e) {
-        anguloDisparo = Utils.normalRelativeAngleDegrees(e.getBearing() + (robot.heading() - robot.getRadarHeading()));
-        robot.turnGunRight(anguloDisparo);
-        robot.fire(1);
+        anguloDisparo = Utils.normalRelativeAngleDegrees(e.getBearing() + (this.robot.heading - this.robot.gunHeading));
+        this.robot.turnGunRight((int)(anguloDisparo));
+        this.robot.fire(1);
     }
 
 

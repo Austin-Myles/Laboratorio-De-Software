@@ -21,19 +21,13 @@ public class EstrategiaAgresiva implements Estrategia{
 
 
     * */
-
-    @Override
     public void run() {
     }
 
     @Override
     public void runB(LaboRobot robot) {
         // Elegimos los colores
-        setBodyColor(new Color(279, 82, 45));
-        setGunColor(new Color(150, 145, 165));
-        setRadarColor(new Color(200, 200, 70));
-        setScanColor(Color.white);
-        setBulletColor(Color.red);
+        this.robot.setColors(22,1 , 11);
 
         // Loopeamos su actividad común.
         while (true){
@@ -102,6 +96,7 @@ public class EstrategiaAgresiva implements Estrategia{
     * en el mapa.*/
     @Override
     public void analyzeStrategy() {
+        /*
         if (this.robot.energy <= 25 && this.robot.others <= 3) {
             // Caso más extremo: poca vida y pocos enemigos
             this.robot.setEstrategia(new EstrategiaGenocida());
@@ -115,13 +110,17 @@ public class EstrategiaAgresiva implements Estrategia{
             this.robot.setEstrategia(new EstrategiaDefensiva());
             System.out.println("Energía baja, cambiando a estrategia Defensiva");
         }
+        */
     }
 
 
     /*Baile de la victoria*/
     @Override
     public void onWin(WinEvent e) {
-
+        this.robot.back(20);
+        this.robot.turnGunRight(360);
+        this.robot.ahead(20);
+        this.robot.turnGunLeft(360);
     }
 
 }

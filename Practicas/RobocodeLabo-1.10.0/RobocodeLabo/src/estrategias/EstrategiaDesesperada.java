@@ -6,6 +6,7 @@ import robocode.WinEvent;
 
 public class EstrategiaDesesperada implements Estrategia{
 
+    private LaboRobot robot;
     /*
     La idea en este caso es que la estrategía sea lo más cobarde, haciendo que
     el robot solo trace el perímetro del área, en el caso de que trackee un
@@ -25,7 +26,7 @@ public class EstrategiaDesesperada implements Estrategia{
      * trazando el perimetro del cuadrado.*/
     @Override
     public void onScannedRobot(ScannedRobotEvent e) {
-        int anguloAct = robot.heading;
+        int anguloAct = this.robot.heading;
         int anguloNuevo = (anguloAct + 180) % 360;
         robot.turnTo(anguloNuevo);
     }
@@ -33,7 +34,7 @@ public class EstrategiaDesesperada implements Estrategia{
     /*Seguiremos escapando.*/
     @Override
     public void onHitByBullet() {
-        int anguloAct = robot.heading;
+        int anguloAct = this.robot.heading;
         int anguloNuevo = (anguloAct + 180) % 360;
         robot.turnTo(anguloNuevo);
     }
