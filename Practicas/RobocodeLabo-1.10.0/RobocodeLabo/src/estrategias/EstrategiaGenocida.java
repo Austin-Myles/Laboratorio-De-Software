@@ -28,17 +28,18 @@ public class EstrategiaGenocida implements Estrategia{
         int anguloArma;
         // Si el enemigo esta lejos nos acercamos
         if (e.getDistance() > 150) {
-            anguloArma = (int) Utils.normalRelativeAngleDegrees(e.getBearing() + (this.robot.heading - this.robot.gunHeading));
-
-            this.robot.turnGunTo(anguloArma);
+            double anguloAbsoluto = this.robot.heading + e.getBearing();
+            double anguloGiro = Utils.normalRelativeAngleDegrees(anguloAbsoluto - this.robot.gunHeading);
+            this.robot.turnGunRight((int)(anguloGiro));
             this.robot.turnTo((int) e.getBearing());
             this.robot.ahead((int) e.getDistance() - 140);
             return;
         }
 
         // Tenemos a nuestra victima cerca
-        anguloArma = (int) Utils.normalRelativeAngleDegrees(e.getBearing() + (this.robot.heading - this.robot.gunHeading));
-        this.robot.turnGunTo(anguloArma);
+        double anguloAbsoluto = this.robot.heading + e.getBearing();
+        double anguloGiro = Utils.normalRelativeAngleDegrees(anguloAbsoluto - this.robot.gunHeading);
+        this.robot.turnGunRight((int)(anguloGiro));
         this.robot.fire(3);
 
         // Si estamos muy cerca nos alejamos un poco
@@ -49,7 +50,6 @@ public class EstrategiaGenocida implements Estrategia{
                 this.robot.ahead(10);
             }
         }
-        //Scanear
     }
 
     /*Solo movemos el cuerpo teniendo cuidado de no comernos la pared*/
@@ -76,16 +76,21 @@ public class EstrategiaGenocida implements Estrategia{
 
     @Override
     public void setRobot(LaboRobot robot) {
-
+        this.robot = robot;
     }
 
     @Override
     public void analyzeStrategy() {
-
+           //No se usa ya.
     }
 
     @Override
     public void onWin(WinEvent e) {
-
+        this.robot.ahead(10);
+        this.robot.fire(0.1);
+        this.robot.turnGunLeft(10);
+        this.robot.fire(0.1);
+        this.robot.turnGunRight(10);
+        this.robot.fire(0.1);
     }
 }

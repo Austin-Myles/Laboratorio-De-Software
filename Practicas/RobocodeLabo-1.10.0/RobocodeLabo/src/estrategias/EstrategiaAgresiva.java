@@ -15,26 +15,21 @@ public class EstrategiaAgresiva implements Estrategia{
 
     /*La idea en este caso es que la estrategía sea ofensiva pero tampoco
     teniendo el descuido de desperidiciar enegia de manera ineficiente dado
-    que los disparos desperdician energia. Por lo demás
-
-    Run contiene todo el comportamiento predeterminado.
-
-
+    que los disparos desperdician energia. Por lo demás Run contiene todo el comportamiento predeterminado.
     * */
     public void run() {
+        this.runB(this.robot);
     }
 
     @Override
     public void runB(LaboRobot robot) {
         // Elegimos los colores
-        this.robot.setColors(22,1 , 11);
+        this.robot.setColors(11,11 , 11);
 
-        // Loopeamos su actividad común.
-        while (true){
-            robot.turnGunRight(360);  // siempre buscando al enemigo
-            robot.ahead(100);
-            robot.turnRight(30);
-        }
+        // Loopeamos su actividad común. (No se si tiene que estar en un loop o que, lo dejo asi)
+        robot.ahead(100);
+        robot.turnGunRight(360);  // siempre buscando al enemigo
+        robot.turnRight(30);
     }
 
     /*
@@ -45,8 +40,9 @@ public class EstrategiaAgresiva implements Estrategia{
     @Override
     public void onScannedRobot(ScannedRobotEvent e) {
         //Hay que arreglar las funciones porque no agarran bien...
-        anguloDisparo = Utils.normalRelativeAngleDegrees(e.getBearing() + (this.robot.heading - this.robot.gunHeading));
-        this.robot.turnGunRight((int)(anguloDisparo));
+        double anguloAbsoluto = this.robot.heading + e.getBearing();
+        double anguloGiro = Utils.normalRelativeAngleDegrees(anguloAbsoluto - this.robot.gunHeading);
+        this.robot.turnGunRight((int)(anguloGiro));
         this.robot.fire(1);
     }
 
@@ -64,10 +60,10 @@ public class EstrategiaAgresiva implements Estrategia{
             //Hacemos el cambio de estrategia.
             analyzeStrategy();
         }
-
         int anguloGolpe = this.robot.hitByBulletBearing;
         this.robot.turnGunTo(anguloGolpe);
         this.robot.fire(1);
+        this.robot.ahead(10);
     }
 
     /*
@@ -96,7 +92,6 @@ public class EstrategiaAgresiva implements Estrategia{
     * en el mapa.*/
     @Override
     public void analyzeStrategy() {
-        /*
         if (this.robot.energy <= 25 && this.robot.others <= 3) {
             // Caso más extremo: poca vida y pocos enemigos
             this.robot.setEstrategia(new EstrategiaGenocida());
@@ -110,9 +105,7 @@ public class EstrategiaAgresiva implements Estrategia{
             this.robot.setEstrategia(new EstrategiaDefensiva());
             System.out.println("Energía baja, cambiando a estrategia Defensiva");
         }
-        */
     }
-
 
     /*Baile de la victoria*/
     @Override
