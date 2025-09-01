@@ -11,6 +11,8 @@ public interface Estrategia {
     void onHitByBullet();
     void onHitWall();
     void setRobot(NicoustinRobot robot);
-    void analyzeStrategy();
     void onWin(WinEvent e);
+    
+    // Nuevo método para evaluación de estrategia
+    String evalStrat();
 }
