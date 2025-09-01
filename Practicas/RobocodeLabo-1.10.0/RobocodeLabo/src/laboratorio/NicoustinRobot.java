@@ -3,11 +3,18 @@ import estrategias.Estrategia;
 import robocode.*;
 
 
-public class LaboRobot extends JuniorRobot
+public class NicoustinRobot extends JuniorRobot
 {
     private Estrategia estrategia;
 
-    public LaboRobot(Estrategia estrategia) {
+    // Constructor predeterminado para Robocode
+    public NicoustinRobot() {
+        // Inicializamos con estrategia Elite por defecto
+        setEstrategia(new estrategias.EstrategiaElite());
+    }
+    
+    // Constructor con estrategia personalizada
+    public NicoustinRobot(Estrategia estrategia) {
         setEstrategia(estrategia);
     }
 
@@ -24,8 +31,8 @@ public class LaboRobot extends JuniorRobot
 	/**
 	 * onScannedRobot: What to do when you see another robot
 	 */
-	public void onScannedRobot(ScannedRobotEvent e) {
-		estrategia.onScannedRobot(e);
+	public void onScannedRobot() {
+		estrategia.onScannedRobot();
 	}
 
 	/**

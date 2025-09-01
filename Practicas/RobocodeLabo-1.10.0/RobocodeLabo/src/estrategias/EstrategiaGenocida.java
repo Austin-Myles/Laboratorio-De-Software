@@ -1,96 +1,101 @@
 package estrategias;
 
-import laboratorio.LaboRobot;
-import robocode.ScannedRobotEvent;
+import laboratorio.NicoustinRobot;
 import robocode.WinEvent;
-import robocode.util.Utils;
 
 public class EstrategiaGenocida implements Estrategia{
 
-    private LaboRobot robot;
+    private NicoustinRobot robot;
     /*
     * Ultimo caso, simplemente acabaremos con todo lo que existe en el mapa
     * no queremos dejar nada con vida, solo optaremos por esta estrategia
     * cuando no queden menos de 3 robots, sin piedad, que corra sangre.
     */
     public void run() {
-
+        // Método legacy - no usado
     }
 
     @Override
-    public void runB(LaboRobot robot) {
-
+    public void runB(NicoustinRobot robot) {
+        this.robot = robot;
+        robot.setColors(6, 6, 0); // Rojo total, negro
+        
+        System.out.println("🔥 GENOCIDA: ¡SIN PIEDAD, SIN RETIRADA!");
+        
+        // CAZA ACTIVA EXTREMA - Más agresivo que agresiva
+        while(true) {
+            // Movimiento de cazador
+            robot.ahead(200);  // Máxima velocidad
+            robot.turnRight(60);  // Giros amplios para cubrir terreno
+            
+            // Escaneo continuo de 360°
+            robot.turnGunRight(360);
+        }
     }
 
     /*Atacamos sin piedad y no le sacamos el ojo de encima*/
     @Override
-    public void onScannedRobot(ScannedRobotEvent e) {
-        int anguloArma;
-        // Si el enemigo esta lejos nos acercamos
-        if (e.getDistance() > 150) {
-            double anguloAbsoluto = this.robot.heading + e.getBearing();
-            double anguloGiro = Utils.normalRelativeAngleDegrees(anguloAbsoluto - this.robot.gunHeading);
-            this.robot.turnGunRight((int)(anguloGiro));
-            this.robot.turnTo((int) e.getBearing());
-            this.robot.ahead((int) e.getDistance() - 140);
-            return;
-        }
-
-        // Tenemos a nuestra victima cerca
-        double anguloAbsoluto = this.robot.heading + e.getBearing();
-        double anguloGiro = Utils.normalRelativeAngleDegrees(anguloAbsoluto - this.robot.gunHeading);
-        this.robot.turnGunRight((int)(anguloGiro));
-        this.robot.fire(3);
-
-        // Si estamos muy cerca nos alejamos un poco
-        if (e.getDistance() < 40) {
-            if (e.getBearing() > -30 && e.getBearing() <= 30) {
-                this.robot.back(10);
-            } else {
-                this.robot.ahead(10);
-            }
-        }
+    public void onScannedRobot() {
+        // EXTERMINIO INMEDIATO
+        robot.turnGunTo(robot.scannedAngle);
+        robot.turnTo(robot.scannedBearing);  // Cuerpo y cañón hacia enemigo
+        
+        // FUEGO MÁXIMO SIEMPRE
+        robot.fire(3.0);  // Siempre máxima potencia, sin conservar
+        
+        // CARGA KAMIKAZE
+        robot.ahead((int)robot.scannedDistance);  // Ir directamente al enemigo
+        
+        System.out.println("🔥 GENOCIDA: ¡EXTERMINIO EN PROGRESO!");
     }
 
     /*Solo movemos el cuerpo teniendo cuidado de no comernos la pared*/
     @Override
     public void onHitByBullet() {
-        int anguloGolpe = robot.hitByBulletBearing;
-        this.robot.turnGunTo(anguloGolpe);
-        robot.turnTo(anguloGolpe);
-        robot.fire(1);
-        robot.ahead(10);
+        // CONTRAATAQUE INMEDIATO
+        robot.turnGunTo(robot.hitByBulletBearing);
+        robot.turnTo(robot.hitByBulletBearing);
+        
+        // Disparo de venganza
+        robot.fire(3);
+        
+        // Carga directa hacia el atacante
+        robot.ahead(50);
     }
 
     /*Nuevamente evitaremos seguir golpeandonos las paredes eligiendo
     * un angulo para que el robot se desplace adecuadamente*/
     @Override
     public void onHitWall() {
-        int anguloAct = robot.heading;
-        int anguloNuevo = (anguloAct + 180) % 360;
-
-        robot.back(20);
-        robot.turnTo(anguloNuevo);
-        robot.ahead(10);
+        // Rebote agresivo para continuar la caza
+        robot.back(30);
+        robot.turnTo((robot.heading + 90) % 360);  // giro rápido
+        robot.ahead(40);
     }
 
     @Override
-    public void setRobot(LaboRobot robot) {
+    public void setRobot(NicoustinRobot robot) {
         this.robot = robot;
     }
 
     @Override
     public void analyzeStrategy() {
-           //No se usa ya.
+        // NO HAY VUELTA ATRÁS - luchamos hasta el final
+        System.out.println("🔥 MODO GENOCIDA: SIN RETIRADA, SIN RENDICIÓN!");
     }
 
     @Override
     public void onWin(WinEvent e) {
-        this.robot.ahead(10);
-        this.robot.fire(0.1);
-        this.robot.turnGunLeft(10);
-        this.robot.fire(0.1);
-        this.robot.turnGunRight(10);
-        this.robot.fire(0.1);
+        // Victoria total - salvas de celebración
+        System.out.println("🔥🏆 GENOCIDIO COMPLETADO - DOMINACIÓN TOTAL!");
+        
+        for(int i = 0; i < 8; i++) {
+            robot.turnGunRight(45);
+            robot.fire(0.1);  // salvas de victoria
+        }
+        
+        // Danza de guerra final
+        robot.turnLeft(360);
+        robot.turnRight(360);
     }
 }

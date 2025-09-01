@@ -1,17 +1,16 @@
 package estrategias;
 
-import laboratorio.LaboRobot;
+import laboratorio.NicoustinRobot;
 import robocode.JuniorRobot;
-import robocode.ScannedRobotEvent;
 import robocode.WinEvent;
 
 public interface Estrategia {
 
-    void runB(LaboRobot robot);
-    void onScannedRobot(ScannedRobotEvent e);
+    void runB(NicoustinRobot robot);
+    void onScannedRobot();
     void onHitByBullet();
     void onHitWall();
-    void setRobot(LaboRobot robot);
+    void setRobot(NicoustinRobot robot);
     void analyzeStrategy();
     void onWin(WinEvent e);
 }

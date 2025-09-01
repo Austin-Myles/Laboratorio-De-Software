@@ -1,15 +1,11 @@
 package estrategias;
 
-import laboratorio.LaboRobot;
-import robocode.ScannedRobotEvent;
+import laboratorio.NicoustinRobot;
 import robocode.WinEvent;
-import robocode.util.Utils;
-
-import java.awt.*;
 
 public class EstrategiaDesesperada implements Estrategia{
 
-    private LaboRobot robot;
+    private NicoustinRobot robot;
     /*
     La idea en este caso es que la estrategía sea lo más cobarde, haciendo que
     el robot solo trace el perímetro del área, en el caso de que trackee un
@@ -21,75 +17,91 @@ public class EstrategiaDesesperada implements Estrategia{
     }
 
     @Override
-    public void runB(LaboRobot robot) {
+    public void runB(NicoustinRobot robot) {
         this.robot = robot;
-
-        this.robot.setColors(33,33, 33);
-
-        this.robot.ahead(50);
-        this.robot.turnRight(90);
-
+        robot.setColors(10, 0, 6); // Gris, negro, rojo
+        
+        System.out.println("😰 DESESPERADA: Supervivencia a toda costa");
+        
+        // MOVIMIENTO ERRÁTICO EXTREMO - Inspirado en Crazy
+        int direction = 1;
         while (true){
-            this.robot.ahead(100);
-            this.robot.turnRight(90);
+            // Movimiento caótico para ser imposible de seguir
+            robot.turnAheadRight(80, 60 * direction);
+            robot.turnBackLeft(50, 45 * direction);
+            robot.turnAheadLeft(70, 90 * direction);
+            
+            // Cambiar dirección constantemente
+            direction *= -1;
+            
+            // Escaneo mínimo - solo para supervivencia
+            robot.turnGunRight(120);
         }
     }
 
     /*Al detectar un robot simplemente dara un giro de 180° y seguira
      * trazando el perimetro del cuadrado.*/
     @Override
-    public void onScannedRobot(ScannedRobotEvent e) {
-        double anguloAbsoluto = this.robot.heading + e.getBearing();
-        double anguloGiro = Utils.normalRelativeAngleDegrees(anguloAbsoluto - this.robot.gunHeading);
-        this.robot.turnGunRight((int)(anguloGiro));
-        this.robot.fire(0.5);
+    public void onScannedRobot() {
+        // DISPARO MÍNIMO solo si es absolutamente necesario
+        if(robot.energy > 8 && robot.scannedDistance < 100) {
+            robot.turnGunTo(robot.scannedAngle);
+            robot.fire(0.5);  // Mínima energía
+        }
+        
+        // HUIDA INMEDIATA Y CAÓTICA
+        robot.turnTo((robot.scannedBearing + 180 + (int)(Math.random() * 60)) % 360);
+        robot.ahead(120);  // Huir rápido
+        
+        System.out.println("😰 DESESPERADA: ¡HUYENDO!");
     }
 
     /*Seguiremos escapando.*/
     @Override
     public void onHitByBullet() {
-        if(this.robot.others < 4) {
+        if(robot.others < 4) {
             this.analyzeStrategy();
         }
-        int anguloAct = this.robot.heading;
-        int anguloNuevo = (anguloAct + 180) % 360;
-        robot.turnTo(anguloNuevo);
+        
+        // Movimiento errático de supervivencia
+        robot.turnAheadLeft(80, 135 - robot.hitByBulletBearing);
     }
 
     /*Mepa que este esta al pedo*/
     @Override
     public void onHitWall() {
-        int anguloAct = this.robot.heading;
-        int anguloNuevo = (anguloAct + 180) % 360;
-        this.robot.back(20);
-        this.robot.turnTo(anguloNuevo);
-        this.robot.ahead(10);
+        // Rebote desesperado - movimiento impredecible
+        robot.back(35);
+        robot.turnTo((robot.heading + 200) % 360);  // giro irregular
+        robot.ahead(25);
     }
 
 
     @Override
-    public void setRobot(LaboRobot robot) {
+    public void setRobot(NicoustinRobot robot) {
         this.robot = robot;
     }
 
     @Override
     public void analyzeStrategy() {
-        if (this.robot.energy <= 25 || this.robot.others <= 3) {
-            // Caso más extremo: poca vida y pocos enemigos
-            this.robot.setEstrategia(new EstrategiaGenocida());
-            System.out.println("Jean Claude Van Dam en... Matar o Morir.");
-        } else if (this.robot.energy >= 35) {
-            // Vida relativamente baja → defensivo
-            this.robot.setEstrategia(new EstrategiaDefensiva());
-            System.out.println("Recargamos milagrosamente, juguemos inteligente!!");
+        if (robot.energy <= 15 || robot.others <= 2) {
+            // Caso más extremo: última esperanza
+            robot.setEstrategia(new EstrategiaGenocida());
+            System.out.println("🔥 TODO O NADA - ÚLTIMA BALA!");
+        } else if (robot.energy >= 40) {
+            // Milagrosamente recuperamos energía
+            robot.setEstrategia(new EstrategiaDefensiva());
+            System.out.println("😌 Respiramos un poco - Modo defensivo");
         }
     }
 
     @Override
     public void onWin(WinEvent e) {
-        this.robot.turnGunLeft(360);
-        this.robot.turnRight(360);
-        this.robot.turnLeft(360);
-        this.robot.turnGunRight(360);
+        // Celebración de superviviente milagroso
+        for(int i = 0; i < 10; i++) {
+            robot.turnGunLeft(36);
+            robot.turnRight(36);
+        }
+        System.out.println("🎉 ¡SOBREVIVÍ CONTRA TODAS LAS PROBABILIDADES!");
     }
 }

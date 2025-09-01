@@ -1,17 +1,16 @@
 package estrategias;
 
-import laboratorio.LaboRobot;
+import laboratorio.NicoustinRobot;
 import robocode.JuniorRobot;
-import robocode.ScannedRobotEvent;
 import robocode.WinEvent;
-import robocode.util.Utils;
 
 import java.awt.*;
 
 public class EstrategiaAgresiva implements Estrategia{
 
-    private LaboRobot robot;
-    double anguloDisparo;
+    private NicoustinRobot robot;
+    private boolean movingForward = true;
+    private int scanDirection = 1;
 
     /*La idea en este caso es que la estrategía sea ofensiva pero tampoco
     teniendo el descuido de desperidiciar enegia de manera ineficiente dado
@@ -22,14 +21,22 @@ public class EstrategiaAgresiva implements Estrategia{
     }
 
     @Override
-    public void runB(LaboRobot robot) {
-        // Elegimos los colores
-        this.robot.setColors(11,11 , 11);
-
-        // Loopeamos su actividad común. (No se si tiene que estar en un loop o que, lo dejo asi)
-        robot.ahead(100);
-        robot.turnGunRight(360);  // siempre buscando al enemigo
-        robot.turnRight(30);
+    public void runB(NicoustinRobot robot) {
+        this.robot = robot;
+        robot.setColors(6, 0, 11); // Rojo, negro, amarillo
+        
+        System.out.println("⚔️ AGRESIVA: Ataque continuo y persecución");
+        
+        // LOOP AGRESIVO - Basado en RamFire + SpinBot
+        while(true) {
+            // MOVIMIENTO AGRESIVO CONTINUO
+            robot.ahead(150);  // Movimiento rápido hacia adelante
+            robot.turnRight(45);  // Giros amplios para cubrir área
+            
+            // ESCANEO AGRESIVO
+            robot.turnGunRight(180 * scanDirection);
+            scanDirection *= -1;  // Alternar dirección
+        }
     }
 
     /*
@@ -38,12 +45,24 @@ public class EstrategiaAgresiva implements Estrategia{
      * recibir daños con 1 de energia.
      * */
     @Override
-    public void onScannedRobot(ScannedRobotEvent e) {
-        //Hay que arreglar las funciones porque no agarran bien...
-        double anguloAbsoluto = this.robot.heading + e.getBearing();
-        double anguloGiro = Utils.normalRelativeAngleDegrees(anguloAbsoluto - this.robot.gunHeading);
-        this.robot.turnGunRight((int)(anguloGiro));
-        this.robot.fire(1);
+    public void onScannedRobot() {
+        // ATAQUE INMEDIATO Y DIRECTO
+        robot.turnGunTo(robot.scannedAngle);
+        
+        // FUEGO POTENTE - Más agresivo que elite
+        double firepower = 3.0;  // Siempre máximo poder
+        if(robot.energy < 10) {
+            firepower = 1.0;  // Solo conservar si estamos muy mal
+        }
+        robot.fire(firepower);
+        
+        // PERSECUCIÓN DIRECTA - Inspirado en RamFire
+        robot.turnTo(robot.scannedBearing);
+        if(robot.scannedDistance > 100) {
+            robot.ahead((int)robot.scannedDistance - 80);  // Acercarse agresivamente
+        }
+        
+        System.out.println("⚔️ AGRESIVA: ¡Al ataque! Enemigo a " + (int)robot.scannedDistance);
     }
 
     /*
@@ -56,14 +75,19 @@ public class EstrategiaAgresiva implements Estrategia{
     * realizar un cambio de estrategia.*/
     @Override
     public void onHitByBullet() {
-        if(this.robot.energy <= 45){
-            //Hacemos el cambio de estrategia.
+        if(robot.energy <= 45){
             analyzeStrategy();
         }
-        int anguloGolpe = this.robot.hitByBulletBearing;
-        this.robot.turnGunTo(anguloGolpe);
-        this.robot.fire(1);
-        this.robot.ahead(10);
+        
+        // CONTRAATAQUE AGRESIVO
+        robot.turnGunTo(robot.hitByBulletBearing);
+        robot.turnTo(robot.hitByBulletBearing);  // Girar cuerpo hacia atacante
+        robot.fire(3);  // Disparo potente de venganza
+        
+        // CARGA DIRECTA - No huir, atacar
+        robot.ahead(100);
+        
+        System.out.println("💥 AGRESIVA: ¡Contraataque feroz!");
     }
 
     /*
@@ -73,16 +97,21 @@ public class EstrategiaAgresiva implements Estrategia{
     * que nuevamente se golpee contra la pared. */
     @Override
     public void onHitWall() {
-        int anguloAct = this.robot.heading;
-        int anguloNuevo = (anguloAct + 180) % 360;
-
-        this.robot.back(20);
-        this.robot.turnTo(anguloNuevo);
-        this.robot.ahead(10);
+        // REBOTE AGRESIVO
+        movingForward = !movingForward;
+        if(movingForward) {
+            robot.turnRight(90);
+            robot.ahead(80);
+        } else {
+            robot.turnLeft(90);
+            robot.back(60);
+        }
+        
+        System.out.println("🧱 AGRESIVA: Rebote táctico");
     }
 
     @Override
-    public void setRobot(LaboRobot robot) {
+    public void setRobot(NicoustinRobot robot) {
         this.robot = robot;
     }
 
@@ -92,28 +121,39 @@ public class EstrategiaAgresiva implements Estrategia{
     * en el mapa.*/
     @Override
     public void analyzeStrategy() {
-        if (this.robot.energy <= 25 && this.robot.others <= 3) {
+        double energy = robot.energy;
+        int others = robot.others;
+        
+        if (energy <= 25 && others <= 3) {
             // Caso más extremo: poca vida y pocos enemigos
-            this.robot.setEstrategia(new EstrategiaGenocida());
-            System.out.println("Jean Claude Van Dam en... Matar o Morir.");
-        } else if (this.robot.energy < 30 && this.robot.others >= 4) {
+            robot.setEstrategia(new EstrategiaGenocida());
+            System.out.println("🔥 MODO GENOCIDA ACTIVADO - Sin piedad!");
+            return;
+        }
+        if (energy < 30 && others >= 4) {
             // Vida muy baja y muchos enemigos → desesperado
-            this.robot.setEstrategia(new EstrategiaDesesperada());
-            System.out.println("Energía muy baja, cambiando a estrategia Desesperada");
-        } else if (this.robot.energy <= 45) {
+            robot.setEstrategia(new EstrategiaDesesperada());
+            System.out.println("😰 Energía crítica - Modo supervivencia!");
+            return;
+        }
+        if (energy <= 45) {
             // Vida relativamente baja → defensivo
-            this.robot.setEstrategia(new EstrategiaDefensiva());
-            System.out.println("Energía baja, cambiando a estrategia Defensiva");
+            robot.setEstrategia(new EstrategiaDefensiva());
+            System.out.println("🛡️ Energía baja - Cambiando a modo defensivo");
+            return;
         }
     }
 
     /*Baile de la victoria*/
     @Override
     public void onWin(WinEvent e) {
-        this.robot.back(20);
-        this.robot.turnGunRight(360);
-        this.robot.ahead(20);
-        this.robot.turnGunLeft(360);
+        // Baile de la victoria agresivo
+        for(int i = 0; i < 5; i++) {
+            robot.turnGunRight(360);
+            robot.ahead(20);
+            robot.turnGunLeft(360);
+            robot.back(20);
+        }
     }
 
 }
