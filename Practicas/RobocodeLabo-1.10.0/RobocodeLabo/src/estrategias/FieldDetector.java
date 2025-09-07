@@ -42,48 +42,35 @@ public class FieldDetector {
      * Mide el campo usando rebotes contra paredes
      */
     private static void measureByBouncing(NicoustinRobot robot) {
-        double startHeading = robot.heading;
-        int wallHitCount = 0;
-        int totalMovement = 0;
-        
-        // Alinearse hacia un cardinal (Norte)
+        double measuredWidth = 0;
+        double measuredHeight = 0;
+
+        // Alinearse hacia el Norte
         robot.turnLeft((int)(robot.heading % 90));
-        
-        // Ir hacia una pared para establecer punto de referencia
-        robot.ahead(1000); // onHitWall nos detendrá
-        wallHitCount++;
-        
-        // Medir una dimensión (por ejemplo, ancho)
-        robot.turnRight(90); // Girar 90° hacia la derecha
-        
-        // Contar movimiento hasta la siguiente pared
-        int moveDistance = 0;
-        while (wallHitCount < 2 && moveDistance < 1000) {
-            try {
-                robot.ahead(50); // Movimientos pequeños para medir
-                moveDistance += 50;
-                totalMovement += 50;
-            } catch (Exception e) {
-                // Probablemente hit wall
-                break;
-            }
+
+        // 1️⃣ Medir altura
+        robot.ahead(5000); // hasta pared Norte
+        robot.turnRight(180);
+        robot.ahead(5000); // hasta pared Sur
+        measuredHeight = robot.robotY; // posición Y actual ≈ altura total
+        robot.turnRight(90);
+
+        // 2️⃣ Medir ancho
+        robot.ahead(5000); // hasta pared Este
+        robot.turnRight(180);
+        robot.ahead(5000); // hasta pared Oeste
+        measuredWidth = robot.robotX; // posición X actual ≈ ancho total
+        robot.turnRight(90);
+
+        // Normalización (redondear al múltiplo de 100 más cercano)
+        fieldWidth = (int) (Math.round(measuredWidth / 100.0) * 100);
+        fieldHeight = (int) (Math.round(measuredHeight / 100.0) * 100);
+
+        // Fallback si da un valor poco realista
+        if (fieldWidth < 300 || fieldHeight < 300) {
+            fieldWidth = DEFAULT_WIDTH;
+            fieldHeight = DEFAULT_HEIGHT;
         }
-        
-        // Estimar dimensiones basado en el movimiento
-        // Esto es una aproximación - los valores exactos dependen del campo específico
-        if (totalMovement < 300) {
-            fieldWidth = 400; fieldHeight = 400; // Campo pequeño
-        } else if (totalMovement < 500) {
-            fieldWidth = 600; fieldHeight = 400; // Campo mediano
-        } else if (totalMovement < 700) {
-            fieldWidth = 800; fieldHeight = 600; // Campo grande
-        } else {
-            fieldWidth = 1000; fieldHeight = 800; // Campo muy grande
-        }
-        
-        // Volver a posición inicial aproximada
-        robot.turnLeft(180);
-        robot.ahead(100);
     }
     
     /**

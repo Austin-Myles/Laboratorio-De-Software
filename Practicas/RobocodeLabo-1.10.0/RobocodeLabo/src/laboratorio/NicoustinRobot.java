@@ -1,5 +1,6 @@
 package laboratorio;
 
+import estrategas.Estratega;
 import estrategias.Estrategia;
 import estrategias.StrategyMapper;
 import estrategias.StrategyEvaluator;
@@ -15,7 +16,8 @@ import robocode.*;
  * Utiliza el patrón Strategy Pattern con evaluación automática de situaciones.
  */
 public class NicoustinRobot extends JuniorRobot {
-    
+
+    private Estratega estratega;
     private Estrategia estrategia;
     private StrategyEvaluator strategyEvaluator;
     private String currentSituationKey = "start";
@@ -60,6 +62,7 @@ public class NicoustinRobot extends JuniorRobot {
      * Evalúa la situación actual y cambia de estrategia si es necesario
      * Se ejecuta antes de cada acción importante
      */
+    /// Tendriamos que cambiar este, despues lo cambiamos del todo
     private void updateStrategy() {
         if (estrategia != null && strategyEvaluator != null) {
             String newSituationKey = strategyEvaluator.evaluateStrategy();
@@ -73,6 +76,26 @@ public class NicoustinRobot extends JuniorRobot {
             }
         }
     }
+
+    /**
+     * private void updateStrategy(){
+     *     if (estratega != null){
+     *         Estrategia newStrat = estratega.chooseStrategy(this, currentSituationKey);
+     *         if (newStrat != null && !newStrat.getClass().equals(estrategia.getClass())){
+     *             System.out.println("🔄 NICOUSTIN: Cambiando estrategia '" + currentSituationKey + "' → '" + newSituationKey + "'");
+     *             setEstrategia(newStrat);
+     *         }
+     *     }
+     * }
+     */
+
+    /**
+     * Y tendriamos tambien
+     *
+     * public void setEstratega(Estratega estratega){
+     *     this.estratega = estratega;
+     * }
+     */
 
     /**
      * Bucle principal del robot
