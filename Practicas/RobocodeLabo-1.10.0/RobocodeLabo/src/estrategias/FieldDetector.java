@@ -1,6 +1,6 @@
-package estrategias;
+package RobotGod.estrategias;
 
-import laboratorio.NicoustinRobot;
+import NicoustinRobot;
 
 /**
  * Detector de tamaño del campo de batalla para JuniorRobot

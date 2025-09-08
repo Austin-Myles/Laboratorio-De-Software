@@ -1,6 +1,6 @@
-package estrategias;
+package RobotGod.estrategias;
 
-import laboratorio.NicoustinRobot;
+import NicoustinRobot;
 import robocode.JuniorRobot;
 import robocode.WinEvent;
 

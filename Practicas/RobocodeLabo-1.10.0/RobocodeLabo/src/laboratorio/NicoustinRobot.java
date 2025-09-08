@@ -1,8 +1,8 @@
 package laboratorio;
 
 import estrategas.Estratega;
+import estrategas.EstrategaChill;
 import estrategias.Estrategia;
-import estrategias.StrategyMapper;
 import estrategias.StrategyEvaluator;
 import robocode.*;
 
@@ -19,7 +19,6 @@ public class NicoustinRobot extends JuniorRobot {
 
     private Estratega estratega;
     private Estrategia estrategia;
-    private StrategyEvaluator strategyEvaluator;
     private String currentSituationKey = "start";
 
     /**
@@ -27,24 +26,24 @@ public class NicoustinRobot extends JuniorRobot {
      * Inicializa con el evaluador y la estrategia apropiada según la situación actual
      */
     public NicoustinRobot() {
-        // Configurar el evaluador de estrategias con referencia al robot
-        this.strategyEvaluator = new StrategyEvaluator(this);
+        // Lo inicializamos con el estratega chill.
+        this.estratega = new EstrategaChill();
         
         // Inicializar con la estrategia apropiada
-        this.estrategia = StrategyMapper.getStrategyForSituation(this);
-        this.currentSituationKey = StrategyMapper.getCurrentSituation();
+        this.estrategia = this.estratega.chooseStrategy(this, currentSituationKey);
+        this.currentSituationKey = estrategia.getSituationKey();
     }
     
     /**
      * Constructor con estrategia y evaluador personalizados (para testing)
      */
-    public NicoustinRobot(Estrategia estrategia, StrategyEvaluator evaluator) {
-        this.strategyEvaluator = evaluator;
-        setEstrategia(estrategia);
+    public NicoustinRobot(Estratega estratega) {
+        this.estratega = estratega;
+        setEstrategia(this.estratega.chooseStrategy(this, currentSituationKey));
     }
 
     /**
-     * Establece una nueva estrategia y la vincula al robot
+     * Establece una nueva estrategia aunque en este caso el que la decide es el estratega.
      */
     public void setEstrategia(Estrategia estrategia) {
         this.estrategia = estrategia;
@@ -53,49 +52,31 @@ public class NicoustinRobot extends JuniorRobot {
     
     /**
      * Establece un nuevo evaluador de estrategias
-     */
     public void setStrategyEvaluator(StrategyEvaluator evaluator) {
         this.strategyEvaluator = evaluator;
     }
-    
+     */
+
     /**
      * Evalúa la situación actual y cambia de estrategia si es necesario
      * Se ejecuta antes de cada acción importante
      */
     /// Tendriamos que cambiar este, despues lo cambiamos del todo
     private void updateStrategy() {
-        if (estrategia != null && strategyEvaluator != null) {
-            String newSituationKey = strategyEvaluator.evaluateStrategy();
-            
-            if (strategyEvaluator.shouldChangeStrategy(currentSituationKey, newSituationKey)) {
-                System.out.println("🔄 NICOUSTIN: Cambiando estrategia '" + currentSituationKey + "' → '" + newSituationKey + "'");
-                
-                this.currentSituationKey = newSituationKey;
-                StrategyMapper.updateSituation(newSituationKey);
-                this.estrategia = StrategyMapper.getStrategyForSituation(this);
+        if (estratega != null) {
+            Estrategia newStrat = estratega.chooseStrategy(this, currentSituationKey);
+            if (newStrat != null && !newStrat.getClass().equals(estrategia.getClass())){
+                currentSituationKey = newStrat.getSituationKey();
+                System.out.println("🔄 NICOUSTIN: Cambiando estrategia '" + currentSituationKey + "' → '" + newStrat + "'");
+                setEstrategia(newStrat);
             }
         }
     }
 
-    /**
-     * private void updateStrategy(){
-     *     if (estratega != null){
-     *         Estrategia newStrat = estratega.chooseStrategy(this, currentSituationKey);
-     *         if (newStrat != null && !newStrat.getClass().equals(estrategia.getClass())){
-     *             System.out.println("🔄 NICOUSTIN: Cambiando estrategia '" + currentSituationKey + "' → '" + newSituationKey + "'");
-     *             setEstrategia(newStrat);
-     *         }
-     *     }
-     * }
-     */
+    public void setEstratega(Estratega estratega) {
+        this.estratega = estratega;
+    }
 
-    /**
-     * Y tendriamos tambien
-     *
-     * public void setEstratega(Estratega estratega){
-     *     this.estratega = estratega;
-     * }
-     */
 
     /**
      * Bucle principal del robot

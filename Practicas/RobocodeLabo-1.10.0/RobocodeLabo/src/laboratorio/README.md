@@ -1,7 +1,7 @@
 
 # NicoustinRobot 
 
-El robot implementa un sistema de estrategías dinamico que se adapta según el número de enemigos:
+El robot implementa un sistema de estrategías dinámico que se adapta según el número de enemigos:
 - **Start : EstrategiaWalls**
     - La estrategia se utiliza al empezar la partida o al haber muchos enemigos, el enfoque es que el robot sobreviva hasta que el número de robots restantes se reduzca lo suficiente.
 - **End : EstrategiaAntiWalls**
@@ -19,3 +19,9 @@ El Strategy Pattern aparece en las dos estrategias utilizadas por el robot duran
 Una vez hecho el patrullaje del campo, el robot iniciará a posicionarse estrategicamente para evitar ser alcanzado por el fuego de los demás robots. Una vez el número de robots en el campo se reduzca a 3 se optará por la estrategía ofensiva (AntiWalls). El robot estará optando por buscar a los robots yendo a las esquinas y esperando para realizar una emboscada, si pasa mucho tiempo y no logra detectar otros robots cambiará e irá a otra esquina. En el caso de que sea alcanzado por un disparo también cambiará de posición. 
 
 El robot combina dos estrategias según el contexto actual de la ronda. Por cada evento detectado por el robot, ya sea detectar, recibir impacto de un robot enemigo o colisionar con las paredes, el robot actualizará la estrategía que tiene mapeada en el momento.
+
+
+// Entrega 2
+
+Ahora en este caso el robot posee implementado una clase "Estratega" que se encargará de decidir cual es la mejor estrategia durante la partida según diferentes variantes (ya sea energia, cantidad de enemigos, etc).
+El estratega se especifica en el constructor del robot y no se cambia durante la ejecución.
