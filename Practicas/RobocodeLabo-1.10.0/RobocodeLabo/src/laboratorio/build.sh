@@ -12,21 +12,28 @@ cd ..
 
 # Compilar todos los archivos Java
 echo "📝 Compilando archivos Java..."
-javac -cp "../libs/robocode.jar:." laboratorio/*.java estrategias/*.java
+javac -cp "../libs/robocode.jar:." laboratorio/*.java estrategias/*.java estrategas/*.java
 
 if [ $? -eq 0 ]; then
     echo "✅ Compilación exitosa"
-    
+
+    # Crear directorios de destino
+    mkdir ../robots/laboratorio
+    mkdir ../robots/estrategias
+    mkdir ../robots/estrategas
+
+
     # Copiar archivos .class a robots/
     echo "📦 Copiando archivos a robots/..."
     cp laboratorio/*.class ../robots/laboratorio/
+    cp estrategas/*.class ../robots/estrategas/
     cp estrategias/*.class ../robots/estrategias/
     
     # Crear/actualizar JAR
     echo "🗃️ Actualizando JAR..."
     cd ../robots
     rm -f RobocodeLabo.jar
-    jar cf RobocodeLabo.jar estrategias/*.class laboratorio/*.class laboratorio/*.properties
+    jar cf RobocodeLabo.jar estrategias/*.class laboratorio/*.class laboratorio/*.properties estrategas/*.class
     
     if [ $? -eq 0 ]; then
         echo "🏆 ¡Build completado exitosamente!"
