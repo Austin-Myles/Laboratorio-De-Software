@@ -1,6 +1,6 @@
 package RobotGod.estrategias;
 
-import NicoustinRobot;
+import RobotGod.laboratorio.NicoustinRobot;
 import java.util.HashMap;
 import java.util.Map;
 

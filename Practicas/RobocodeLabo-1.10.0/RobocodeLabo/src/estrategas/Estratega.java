@@ -1,7 +1,7 @@
-package estrategas;
+package RobotGod.estrategas;
 
-import estrategias.Estrategia;
-import laboratorio.NicoustinRobot;
+import RobotGod.estrategias.Estrategia;
+import RobotGod.laboratorio.NicoustinRobot;
 
 public interface Estratega {
 

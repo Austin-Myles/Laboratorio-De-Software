@@ -1,6 +1,6 @@
 package RobotGod.estrategias;
 
-import NicoustinRobot;
+import RobotGod.laboratorio.NicoustinRobot;
 import robocode.JuniorRobot;
 import robocode.WinEvent;
 
@@ -12,6 +12,7 @@ public interface Estrategia {
     void onHitWall();
     void setRobot(NicoustinRobot robot);
     void onWin(WinEvent e);
+    String getSituationKey();
     
     // Nuevo método para evaluación de estrategia
     String evalStrat();

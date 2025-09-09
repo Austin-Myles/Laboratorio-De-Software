@@ -1,6 +1,6 @@
 package RobotGod.estrategias;
 
-import NicoustinRobot;
+import RobotGod.laboratorio.NicoustinRobot;
 
 /**
  * StrategyEvaluator - Evaluador de RobotGod.estrategias

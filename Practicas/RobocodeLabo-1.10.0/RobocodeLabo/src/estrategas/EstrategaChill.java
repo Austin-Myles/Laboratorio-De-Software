@@ -3,7 +3,7 @@ package RobotGod.estrategas;
 import RobotGod.estrategias.Estrategia;
 import RobotGod.estrategias.EstrategiaAntiWalls;
 import RobotGod.estrategias.EstrategiaWalls;
-import NicoustinRobot;
+import RobotGod.laboratorio.NicoustinRobot;
 
 public class EstrategaChill implements Estratega {
     @Override

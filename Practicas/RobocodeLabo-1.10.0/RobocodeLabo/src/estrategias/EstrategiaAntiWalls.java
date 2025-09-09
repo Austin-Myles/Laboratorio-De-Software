@@ -1,6 +1,6 @@
 package RobotGod.estrategias;
 
-import NicoustinRobot;
+import RobotGod.laboratorio.NicoustinRobot;
 import robocode.WinEvent;
 
 /**
@@ -186,5 +186,10 @@ public class EstrategiaAntiWalls implements Estrategia {
             robot.turnGunRight(90);
             robot.ahead(25);
         }
+    }
+
+    @Override
+    public String getSituationKey() {
+        return "Estrategia Anti-Walls";
     }
 }
