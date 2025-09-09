@@ -17,28 +17,28 @@ javac -cp "../libs/robocode.jar:." laboratorio/*.java estrategias/*.java estrate
 if [ $? -eq 0 ]; then
     echo "✅ Compilación exitosa"
 
-    # Crear directorios de destino
-    mkdir ../robots/laboratorio
-    mkdir ../robots/estrategias
-    mkdir ../robots/estrategas
+    # Crear directorio de destino principal
+    mkdir -p ../robots/robotGod/laboratorio
+    mkdir -p ../robots/robotGod/estrategias
+    mkdir -p ../robots/robotGod/estrategas
 
-
-    # Copiar archivos .class a robots/
-    echo "📦 Copiando archivos a robots/..."
-    cp laboratorio/*.class ../robots/laboratorio/
-    cp estrategas/*.class ../robots/estrategas/
-    cp estrategias/*.class ../robots/estrategias/
+    # Copiar archivos .class a robots/robotGod
+    echo "📦 Copiando archivos a robots/robotGod..."
+    cp laboratorio/*.class ../robots/robotGod/laboratorio/
+    cp estrategias/*.class ../robots/robotGod/estrategias/
+    cp estrategas/*.class ../robots/robotGod/estrategas/
+    cp laboratorio/*.properties ../robots/robotGod/laboratorio/ 2>/dev/null || true
 
     # Crear/actualizar JAR
     echo "🗃️ Actualizando JAR..."
     cd ../robots
-    rm -f RobocodeLabo.jar
-    jar cf RobocodeLabo.jar estrategias/*.class laboratorio/*.class laboratorio/*.properties estrategas/*.class
+    rm -f robotGod.jar
+    jar cf robotGod.jar robotGod/laboratorio/*.class robotGod/laboratorio/*.properties robotGod/estrategias/*.class robotGod/estrategas/*.class
 
     if [ $? -eq 0 ]; then
         echo "🏆 ¡Build completado exitosamente!"
         echo "📋 Archivos en JAR:"
-        jar tf RobocodeLabo.jar | grep -E '\.(class|properties)$' | sort
+        jar tf robotGod.jar | grep -E '\.(class|properties)$' | sort
     else
         echo "❌ Error creando JAR"
         exit 1
