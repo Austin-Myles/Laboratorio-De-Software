@@ -1,27 +1,141 @@
+# NicoustinRobot - Paquete Independiente
 
-# NicoustinRobot 
+Un robot inteligente para Robocode que implementa un sistema de estrategias dinámico que se adapta según las condiciones de batalla.
 
-El robot implementa un sistema de estrategías dinámico que se adapta según el número de enemigos:
-- **Start : EstrategiaWalls**
-    - La estrategia se utiliza al empezar la partida o al haber muchos enemigos, el enfoque es que el robot sobreviva hasta que el número de robots restantes se reduzca lo suficiente.
-- **End : EstrategiaAntiWalls**
-    - En este caso el robot cambiará su patrón de reconocimiento a uno más enfocado en "cazar" a sus oponentes restantes.
+## 🚀 Características
 
-Posee definido una estrategía actual, un evaluador de estrategias (encargado de analizar las condiciones del contexto en el que trasncurre y determinar la estrategía adecuada) y una llave que define la situación actual la cual está directamente relacionada a la situación actual.
+- **Sistema de Estrategias Dinámico**: Cambia automáticamente entre estrategias según el número de enemigos
+- **Patrón Strategy**: Arquitectura modular y extensible
+- **Evaluación Automática**: Analiza la situación de batalla en tiempo real
+- **Estrategias Incluidas**:
+  - `EstrategiaWalls`: Supervivencia defensiva para inicio de batalla
+  - `EstrategiaAntiWalls`: Caza ofensiva para final de batalla
 
-El Strategy Pattern aparece en las dos estrategias utilizadas por el robot durante su ejecución y en el Evaluador de estrategias encargado de obtener la estrategía apropiada para el robot en el contexto que se encuentre, ambas mapeadas en el robot realizando los intercambios durante la ejecución del mismo.
+## 📦 Contenido del Paquete
 
-- FieldDetector
-  - Es una clase definida para determinar el tamaño total del campo de batalla. También existen dos estratégias para determinar el tamaño del área de batalla:
-    - **Exploración por Rebote**: La ídea es que el robot explore el mapa y mida el campo usando rebotes contra las paredes para determinar el área total de esta misma, ayudandose con un contador en el que se almacenan la cantidad de rebotes y la distancia recorrida. Una vez realizado el cálculo el robot intentará volver a la posición inicial.
-    - **Aproximación Inteligente**: El robot iniciará dirigiendose al norte hasta cumplir con la distancia que posee mapeada o hasta colisionar con la pared, luego intentará yendo al este. Según la cantidad de colisiones determinará el área del campo de batalla.
+```
+laboratorio/
+├── NicoustinRobot.java          # Robot principal
+├── NicoustinRobot.properties    # Configuración del robot
+├── build.sh                     # Script de compilación
+├── README.md                    # Este archivo
+├── estrategias/                 # Estrategias de combate
+│   ├── Estrategia.java
+│   ├── EstrategiaWalls.java
+│   ├── EstrategiaAntiWalls.java
+│   └── FieldDetector.java
+└── estrategas/                  # Selectores de estrategia
+    ├── Estratega.java
+    ├── EstrategaChill.java
+    └── EstrategaSunTzu.java
+```
 
-Una vez hecho el patrullaje del campo, el robot iniciará a posicionarse estrategicamente para evitar ser alcanzado por el fuego de los demás robots. Una vez el número de robots en el campo se reduzca a 3 se optará por la estrategía ofensiva (AntiWalls). El robot estará optando por buscar a los robots yendo a las esquinas y esperando para realizar una emboscada, si pasa mucho tiempo y no logra detectar otros robots cambiará e irá a otra esquina. En el caso de que sea alcanzado por un disparo también cambiará de posición. 
+## 🛠️ Instalación y Uso
 
-El robot combina dos estrategias según el contexto actual de la ronda. Por cada evento detectado por el robot, ya sea detectar, recibir impacto de un robot enemigo o colisionar con las paredes, el robot actualizará la estrategía que tiene mapeada en el momento.
+### Prerequisitos
+
+- Java JDK 8 o superior
+- Instalación de Robocode
+- Terminal/Línea de comandos
+
+### Opción 1: Compilación Automática (Recomendada)
+
+1. **Navega al directorio del paquete:**
+   ```bash
+   cd laboratorio/
+   ```
+
+2. **Ejecuta el script de compilación:**
+   ```bash
+   # Autodetección de robocode.jar
+   ./build.sh
+   
+   # O especifica la ruta manualmente
+   ./build.sh /path/to/robocode/libs
+   ```
+
+3. **Instala en Robocode:**
+   - Copia `NicoustinRobot.jar` al directorio `robots/` de tu instalación de Robocode
+   - O extrae el contenido del JAR directamente en `robots/`
+
+### Scripts Incluidos
+
+- `./build.sh` - Compila y crea el JAR
+- `./clean.sh` - Limpia archivos compilados
+
+### Opción 2: Compilación Manual
+
+1. **Compila los archivos Java:**
+   ```bash
+   javac -cp "/path/to/robocode/libs/robocode.jar:." *.java estrategias/*.java estrategas/*.java
+   ```
+
+2. **Crea la estructura de directorios en robots/:**
+   ```bash
+   mkdir -p /path/to/robocode/robots/laboratorio
+   mkdir -p /path/to/robocode/robots/estrategias
+   mkdir -p /path/to/robocode/robots/estrategas
+   ```
+
+3. **Copia los archivos compilados:**
+   ```bash
+   cp *.class /path/to/robocode/robots/laboratorio/
+   cp *.properties /path/to/robocode/robots/laboratorio/
+   cp estrategias/*.class /path/to/robocode/robots/estrategias/
+   cp estrategas/*.class /path/to/robocode/robots/estrategas/
+   ```
 
 
-// Entrega 2
+## 🧠 Cómo Funciona
 
-Ahora en este caso el robot posee implementado una clase "Estratega" que se encargará de decidir cual es la mejor estrategia durante la partida según diferentes variantes (ya sea energia, cantidad de enemigos, etc).
-El estratega se especifica en el constructor del robot y no se cambia durante la ejecución.
+### Arquitectura
+
+```
+NicoustinRobot
+    ↓
+Estratega (EstrategaChill/EstrategaSunTzu)
+    ↓
+Estrategia (EstrategiaWalls/EstrategiaAntiWalls)
+    ↓
+Acciones específicas de combate
+```
+
+### Flujo de Decisión
+
+1. **Evaluación**: El robot evalúa la situación actual (número de enemigos, posición, etc.)
+2. **Selección**: El `Estratega` elige la estrategia más apropiada
+3. **Ejecución**: La `Estrategia` seleccionada ejecuta las acciones de combate
+4. **Adaptación**: El ciclo se repite continuamente para adaptarse a cambios
+
+### Estrategias
+
+- **EstrategiaWalls**: 
+  - Usada al inicio cuando hay muchos enemigos
+  - Se mantiene cerca de las paredes para protección
+  - Enfoque defensivo y de supervivencia
+
+- **EstrategiaAntiWalls**:
+  - Usada al final cuando quedan pocos enemigos
+  - Movimiento agresivo hacia el centro
+  - Enfoque ofensivo de caza
+
+## 🔧 Personalización
+
+### Añadir Nueva Estrategia
+
+1. Implementa la interfaz `Estrategia`:
+   ```java
+   public class MiNuevaEstrategia implements Estrategia {
+       // Implementar métodos requeridos
+   }
+   ```
+
+2. Modifica el `Estratega` para incluir tu nueva estrategia
+
+3. Recompila usando `./build.sh`
+
+### Modificar Comportamiento
+
+- Edita los archivos en `estrategias/` para cambiar comportamientos específicos
+- Modifica `estrategas/` para cambiar la lógica de selección de estrategias
+

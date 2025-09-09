@@ -1,15 +1,14 @@
 package estrategas;
 
 import estrategias.Estrategia;
-import estrategias.EstrategiaCampera;
 import estrategias.EstrategiaWalls;
+import estrategias.EstrategiaAntiWalls;
 import laboratorio.NicoustinRobot;
 
 public class EstrategaSunTzu implements Estratega{
-    @Override
-    public Estrategia chooseStrategy(NicoustinRobot robot, String estrategiaActual) {
+    public Estrategia chooseStrategy(NicoustinRobot robot) {
         if(robot.energy < 50) {
-            return new EstrategiaCampera();
+            return new EstrategiaAntiWalls();
         } else {
             return new EstrategiaWalls();
         }

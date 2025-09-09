@@ -3,7 +3,6 @@ package laboratorio;
 import estrategas.Estratega;
 import estrategas.EstrategaChill;
 import estrategias.Estrategia;
-import estrategias.StrategyEvaluator;
 import robocode.*;
 
 /**
@@ -19,7 +18,6 @@ public class NicoustinRobot extends JuniorRobot {
 
     private Estratega estratega;
     private Estrategia estrategia;
-    private String currentSituationKey = "start";
 
     /**
      * Constructor predeterminado para Robocode
@@ -30,8 +28,7 @@ public class NicoustinRobot extends JuniorRobot {
         this.estratega = new EstrategaChill();
         
         // Inicializar con la estrategia apropiada
-        this.estrategia = this.estratega.chooseStrategy(this, currentSituationKey);
-        this.currentSituationKey = estrategia.getSituationKey();
+        this.estrategia = this.estratega.chooseStrategy(this);
     }
     
     /**
@@ -39,7 +36,7 @@ public class NicoustinRobot extends JuniorRobot {
      */
     public NicoustinRobot(Estratega estratega) {
         this.estratega = estratega;
-        setEstrategia(this.estratega.chooseStrategy(this, currentSituationKey));
+        setEstrategia(this.estratega.chooseStrategy(this));
     }
 
     /**
@@ -50,12 +47,6 @@ public class NicoustinRobot extends JuniorRobot {
         estrategia.setRobot(this);
     }
     
-    /**
-     * Establece un nuevo evaluador de estrategias
-    public void setStrategyEvaluator(StrategyEvaluator evaluator) {
-        this.strategyEvaluator = evaluator;
-    }
-     */
 
     /**
      * Evalúa la situación actual y cambia de estrategia si es necesario
@@ -64,10 +55,8 @@ public class NicoustinRobot extends JuniorRobot {
     /// Tendriamos que cambiar este, despues lo cambiamos del todo
     private void updateStrategy() {
         if (estratega != null) {
-            Estrategia newStrat = estratega.chooseStrategy(this, currentSituationKey);
+            Estrategia newStrat = estratega.chooseStrategy(this);
             if (newStrat != null && !newStrat.getClass().equals(estrategia.getClass())){
-                currentSituationKey = newStrat.getSituationKey();
-                System.out.println("🔄 NICOUSTIN: Cambiando estrategia '" + currentSituationKey + "' → '" + newStrat + "'");
                 setEstrategia(newStrat);
             }
         }
