@@ -1,9 +1,9 @@
-package RobotGod.estrategias;
+package estrategias;
 
-import RobotGod.laboratorio.NicoustinRobot;
+import laboratorio.NicoustinRobot;
 
 /**
- * StrategyEvaluator - Evaluador de RobotGod.estrategias
+ * StrategyEvaluator - Evaluador de estrategias
  * 
  * Analiza las condiciones actuales de batalla y determina qué estrategia
  * es la más apropiada para la situación. Mantiene una referencia al robot
@@ -16,7 +16,7 @@ public class StrategyEvaluator {
     /**
      * Constructor que establece la referencia al robot
      * 
-     * @param robot El robot al cual evaluar las RobotGod.estrategias
+     * @param robot El robot al cual evaluar las estrategias
      */
     public StrategyEvaluator(NicoustinRobot robot) {
         this.robot = robot;

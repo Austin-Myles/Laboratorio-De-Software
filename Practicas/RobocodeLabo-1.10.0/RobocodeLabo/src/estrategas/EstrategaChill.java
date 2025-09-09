@@ -1,9 +1,9 @@
-package RobotGod.estrategas;
+package estrategas;
 
-import RobotGod.estrategias.Estrategia;
-import RobotGod.estrategias.EstrategiaAntiWalls;
-import RobotGod.estrategias.EstrategiaWalls;
-import RobotGod.laboratorio.NicoustinRobot;
+import estrategias.Estrategia;
+import estrategias.EstrategiaAntiWalls;
+import estrategias.EstrategiaWalls;
+import laboratorio.NicoustinRobot;
 
 public class EstrategaChill implements Estratega {
     @Override

@@ -1,13 +1,13 @@
-package RobotGod.estrategias;
+package estrategias;
 
-import RobotGod.laboratorio.NicoustinRobot;
+import laboratorio.NicoustinRobot;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * StrategyMapper - Mapea situaciones de batalla a RobotGod.estrategias específicas
+ * StrategyMapper - Mapea situaciones de batalla a estrategias específicas
  * 
- * Gestiona el cambio automático entre RobotGod.estrategias según el contexto:
+ * Gestiona el cambio automático entre estrategias según el contexto:
  * - "start": Muchos enemigos (>3) → EstrategiaWalls (supervivencia)
  * - "end": Pocos enemigos (≤3) → EstrategiaAntiWalls (caza)
  */
