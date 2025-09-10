@@ -9,21 +9,37 @@ public class EstrategaChill implements Estratega {
     
     public Estrategia chooseStrategy(NicoustinRobot robot, String situationKey) {
         if (robot.others > 3){
-            return new EstrategiaWalls();
+            return EstrategiaWalls.getInstance();
         } else {
-            return new EstrategiaAntiWalls();
+            return EstrategiaAntiWalls.getInstance();
         }
     }
 
     /**
      * Estrategia Walls como clase interna
      * Se mueve por el perímetro del campo con el cañón hacia adentro
+     * Implementa patrón Singleton
      */
     public static class EstrategiaWalls implements Estrategia {
+        
+        // Singleton instance
+        private static EstrategiaWalls instance;
         
         private NicoustinRobot robot;
         private boolean peek = false; // No girar si hay un robot ahí
         private int moveAmount = 0; // Cuánto moverse
+        
+        // Constructor privado para singleton
+        private EstrategiaWalls() {
+        }
+        
+        // Método getInstance para obtener la única instancia
+        public static EstrategiaWalls getInstance() {
+            if (instance == null) {
+                instance = new EstrategiaWalls();
+            }
+            return instance;
+        }
         
         @Override
         public void runB(NicoustinRobot robot) {
@@ -139,14 +155,30 @@ public class EstrategaChill implements Estratega {
     /**
      * Estrategia Anti-Walls como clase interna
      * Counter específico para robots tipo Walls usando emboscadas en esquinas
+     * Implementa patrón Singleton
      */
     public static class EstrategiaAntiWalls implements Estrategia {
+        
+        // Singleton instance
+        private static EstrategiaAntiWalls instance;
         
         private NicoustinRobot robot;
         private int currentCorner = 0; // 0=arriba-izq, 1=arriba-der, 2=abajo-der, 3=abajo-izq
         private boolean inPosition = false;
         private int waitTurns = 0;
         private boolean targetDetected = false;
+        
+        // Constructor privado para singleton
+        private EstrategiaAntiWalls() {
+        }
+        
+        // Método getInstance para obtener la única instancia
+        public static EstrategiaAntiWalls getInstance() {
+            if (instance == null) {
+                instance = new EstrategiaAntiWalls();
+            }
+            return instance;
+        }
         
         @Override
         public void runB(NicoustinRobot robot) {
