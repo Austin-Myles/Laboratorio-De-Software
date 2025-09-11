@@ -6,9 +6,11 @@ import laboratorio.NicoustinRobot;
 import robocode.WinEvent;
 
 public class EstrategaChill implements Estratega {
+
+    private NicoustinRobot robot;
     
     public Estrategia chooseStrategy(NicoustinRobot robot, String situationKey) {
-        if (robot.others > 3){
+        if (robot.others > 3) {
             return EstrategiaWalls.getInstance();
         } else {
             return EstrategiaAntiWalls.getInstance();
@@ -20,7 +22,7 @@ public class EstrategaChill implements Estratega {
      * Se mueve por el perímetro del campo con el cañón hacia adentro
      * Implementa patrón Singleton
      */
-    public static class EstrategiaWalls implements Estrategia {
+    private class EstrategiaWalls implements Estrategia {
         
         // Singleton instance
         private static EstrategiaWalls instance;

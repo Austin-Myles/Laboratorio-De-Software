@@ -7,7 +7,9 @@ import robocode.WinEvent;
 
 public class EstrategaSunTzu implements Estratega {
     
-    public Estrategia chooseStrategy(NicoustinRobot robot, String situationKey) {
+    private NicoustinRobot robot;
+    
+    public Estrategia chooseStrategy(NicoustinRobot robot) {
         if(robot.energy < 50) {
             return new EstrategiaAntiWalls(); // Estrategia agresiva cuando está débil
         } else {
@@ -19,7 +21,7 @@ public class EstrategaSunTzu implements Estratega {
      * Estrategia Walls como clase interna - versión Sun Tzu (más táctica)
      * Se mueve por el perímetro pero con más inteligencia defensiva
      */
-    public static class EstrategiaWalls implements Estrategia {
+    private class EstrategiaWalls implements Estrategia {
         
         private NicoustinRobot robot;
         private boolean peek = false;
