@@ -1,0 +1,4 @@
+package estrategias
+
+class StrategyEvaluator {
+}
