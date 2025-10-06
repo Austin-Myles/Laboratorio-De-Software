@@ -1,56 +1,37 @@
 @echo off
-rem Script de compilación automática para NicoustinRobot (Windows)
-rem Uso: build.bat
+rem === Compilar proyecto Robocode Kotlin ===
+setlocal enabledelayedexpansion
 
-@echo off
-set KOTLIN_HOME=C:\Program Files\kotlin-compiler-2.2.20\kotlinc
-set CLASSPATH=%KOTLIN_HOME%\lib\kotlin-stdlib.jar
+rem Directorios base
+set "KOTLIN_HOME=C:\Program Files\kotlin-compiler-2.2.20\kotlinc"
+set LIBS=%KOTLIN_HOME%\lib
+set "BASE_DIR=%~dp0"
+cd /d "%BASE_DIR%"
+cd ..\..
+set "PROJECT_DIR=%cd%"
+set "SRC_DIR=%PROJECT_DIR%\src"
+set "LIBS_DIR=%PROJECT_DIR%\libs"
+set "OUT_JAR=%PROJECT_DIR%\robots\robotGod.jar"
 
-%KOTLIN_HOME%\bin\kotlinc estrategias\*.kt -include-runtime -d Estrategias.jar
+echo 🔧 Compilando proyecto Robocode Kotlin...
+echo.
 
-echo 🔨 Compilando NicoustinRobot...
+echo SRC_DIR: %SRC_DIR%
+echo LIBS_DIR: %LIBS_DIR%
+echo.
 
-rem Ir al directorio src (desde laboratorio)
-cd ..
+call "%KOTLIN_HOME%\bin\kotlinc.bat" "%SRC_DIR%\laboratorio\NicoustinRobot.kt" "%SRC_DIR%\estrategias\*.kt" -cp "%LIBS%\kotlin-stdlib.jar;%LIBS_DIR%\robocode.jar" -include-runtime -d "%OUT_JAR%"
 
-rem Compilar archivos Kotlin y Java juntos
-echo 📝 Compilando archivos Kotlin y Java...
+echo ---- SALIDA DEL COMPILADOR ----
+echo.
 
-rem IMPORTANTE:
-rem -cp incluye robocode.jar y el directorio actual (.)
-rem -d indica dónde dejar los .class (build/ en este caso)
-
-if not exist build mkdir build
-
-kotlinc laboratorio/*.kt estrategias/*.kt laboratorio/*.java estrategias/*.java ^
-  -cp "../libs/robocode.jar" ^
-  -d build
-
-if %errorlevel% equ 0 (
-    echo ✅ Compilación exitosa
-
-    rem Copiar archivos .class a robots/
-    echo 📦 Copiando archivos a robots/...
-    if not exist ..\robots\laboratorio mkdir ..\robots\laboratorio
-    if not exist ..\robots\estrategias mkdir ..\robots\estrategias
-    copy build\laboratorio\*.class ..\robots\laboratorio\
-    copy build\estrategias\*.class ..\robots\estrategias\
-    
-    rem Crear/actualizar JAR
-    echo 🗃️ Actualizando JAR...
-    cd ..\robots
-    if exist RobocodeLabo.jar del RobocodeLabo.jar
-    jar cf RobocodeLabo.jar estrategias/*.class laboratorio/*.class laboratorio/*.properties
-    
-    if %errorlevel% equ 0 (
-        echo 🏆 ¡Build completado exitosamente!
-        echo 📋 Archivos en JAR:
-        jar tf RobocodeLabo.jar | findstr /E ".class .properties"
-    ) else (
-        echo ❌ Error creando JAR
-        exit /b 1
-    )
-) else (
-    echo ❌ Error de compilación
-    exit /b 1
+if %errorlevel% neq 0 (
+    echo ❌ Error al compilar el proyecto.
+    pause
+    exit /b %errorlevel%
 )
+
+echo ✅ Compilación completada correctamente.
+echo 📦 Jar generado en: %OUT_JAR%
+pause
+endlocal
