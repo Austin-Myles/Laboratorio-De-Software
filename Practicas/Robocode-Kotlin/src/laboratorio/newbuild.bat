@@ -31,6 +31,34 @@ if %errorlevel% neq 0 (
     exit /b %errorlevel%
 )
 
+echo ✅ Compilación exitosa
+echo.
+
+rem === Copiar archivos .class a robots/ ===
+echo 📦 Copiando archivos a robots/...
+if not exist "%PROJECT_DIR%\robots\laboratorio" mkdir "%PROJECT_DIR%\robots\laboratorio"
+if not exist "%PROJECT_DIR%\robots\estrategias" mkdir "%PROJECT_DIR%\robots\estrategias"
+
+copy "%SRC_DIR%\laboratorio\*.class" "%PROJECT_DIR%\robots\laboratorio\" >nul
+copy "%SRC_DIR%\estrategias\*.class" "%PROJECT_DIR%\robots\estrategias\" >nul
+
+rem === Crear/actualizar JAR ===
+echo 🗃️ Actualizando JAR...
+cd "%PROJECT_DIR%\robots"
+if exist RobotGod.jar del RobotGod.jar
+
+jar cf RobotGod.jar estrategias/*.class laboratorio/*.class laboratorio/*.properties
+
+if %errorlevel% equ 0 (
+    echo 🏆 ¡Build completado exitosamente!
+    echo 📋 Archivos en JAR:
+    jar tf RobotGod.jar | findstr /E ".class .properties"
+) else (
+    echo ❌ Error creando JAR
+    exit /b 1
+)
+
+echo.
 echo ✅ Compilación completada correctamente.
 echo 📦 Jar generado en: %OUT_JAR%
 pause
