@@ -12,7 +12,7 @@ PROJECT_DIR="$(cd "$BASE_DIR/../.." && pwd)"
 SRC_DIR="$PROJECT_DIR/src"
 LIBS_DIR="$PROJECT_DIR/libs"
 ROBOTS_DIR="$PROJECT_DIR/robots"
-OUT_JAR="$ROBOTS_DIR/RobotGod.jar"
+OUT_JAR="$ROBOTS_DIR/RobocodeLabo.jar"
 
 echo "📁 Directorios:"
 echo "  BASE_DIR: $BASE_DIR"
@@ -95,9 +95,9 @@ cp "$SRC_DIR/estrategas/"*.class "$ROBOTS_DIR/estrategas/" 2>/dev/null || true
 # Crear/actualizar el JAR
 echo "🗃️ Creando JAR..."
 cd "$ROBOTS_DIR"
-rm -f RobotGod.jar
+rm -f RobocodeLabo.jar
 
-jar cf RobotGod.jar \
+jar cf RobocodeLabo.jar \
     estrategias/*.class \
     laboratorio/*.class \
     estrategas/*.class \
@@ -106,11 +106,11 @@ jar cf RobotGod.jar \
 if [ $? -eq 0 ]; then
     echo "🏆 ¡Build completado exitosamente!"
     echo "📋 Archivos en JAR:"
-    jar tf RobotGod.jar | grep -E '\.(class|properties)$' | sort
+    jar tf RobocodeLabo.jar | grep -E '\.(class|properties)$' | sort
     echo
     echo "📊 Estadísticas del JAR:"
-    echo "  Tamaño: $(du -h RobotGod.jar | cut -f1)"
-    echo "  Archivos: $(jar tf RobotGod.jar | wc -l)"
+    echo "  Tamaño: $(du -h RobocodeLabo.jar | cut -f1)"
+    echo "  Archivos: $(jar tf RobocodeLabo.jar | wc -l)"
 else
     echo "❌ Error creando JAR"
     exit 1
