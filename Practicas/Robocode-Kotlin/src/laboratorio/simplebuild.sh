@@ -27,9 +27,9 @@ cp "$ROBOTS_DIR/laboratorio/"*.class "$ROBOTS_DIR/laboratorio/" 2>/dev/null || t
 # Crear el JAR
 echo "🗃️ Creando JAR..."
 cd "$ROBOTS_DIR"
-rm -f RobocodeLabo.jar
+rm -f RobotGod.jar
 
-jar cf RobocodeLabo.jar \
+jar cf RobotGod.jar \
     estrategias/*.class \
     laboratorio/*.class \
     laboratorio/*.properties
@@ -37,11 +37,11 @@ jar cf RobocodeLabo.jar \
 if [ $? -eq 0 ]; then
     echo "🏆 ¡JAR creado exitosamente!"
     echo "📋 Archivos en JAR:"
-    jar tf RobocodeLabo.jar | grep -E '\.(class|properties)$' | sort
+    jar tf RobotGod.jar | grep -E '\.(class|properties)$' | sort
     echo
     echo "📊 Estadísticas del JAR:"
-    echo "  Tamaño: $(du -h RobocodeLabo.jar | cut -f1)"
-    echo "  Archivos: $(jar tf RobocodeLabo.jar | wc -l)"
+    echo "  Tamaño: $(du -h RobotGod.jar | cut -f1)"
+    echo "  Archivos: $(jar tf RobotGod.jar | wc -l)"
     echo
     echo "✅ El robot está listo para usar en Robocode"
 else

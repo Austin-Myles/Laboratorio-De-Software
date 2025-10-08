@@ -12,7 +12,7 @@ PROJECT_DIR="$(cd "$BASE_DIR/../.." && pwd)"
 SRC_DIR="$PROJECT_DIR/src"
 LIBS_DIR="$PROJECT_DIR/libs"
 ROBOTS_DIR="$PROJECT_DIR/robots"
-OUT_JAR="$ROBOTS_DIR/RobocodeLabo.jar"
+OUT_JAR="$ROBOTS_DIR/RobotGod.jar"
 
 echo "📁 Directorios:"
 echo "  BASE_DIR: $BASE_DIR"
@@ -55,12 +55,12 @@ else
               "$SRC_DIR/estrategas/"*.java \
               "$SRC_DIR/Main.java" \
               -d "$SRC_DIR"
-        
+
         if [ $? -ne 0 ]; then
             echo "❌ Error de compilación Java"
             exit 1
         fi
-        
+
         echo "✅ Compilación Java exitosa"
     else
         echo "❌ Error: No se encontró compilador de Kotlin ni archivos Java"
@@ -95,9 +95,9 @@ cp "$SRC_DIR/estrategas/"*.class "$ROBOTS_DIR/estrategas/" 2>/dev/null || true
 # Crear/actualizar el JAR
 echo "🗃️ Creando JAR..."
 cd "$ROBOTS_DIR"
-rm -f RobocodeLabo.jar
+rm -f RobotGod.jar
 
-jar cf RobocodeLabo.jar \
+jar cf RobotGod.jar \
     estrategias/*.class \
     laboratorio/*.class \
     estrategas/*.class \
@@ -106,11 +106,11 @@ jar cf RobocodeLabo.jar \
 if [ $? -eq 0 ]; then
     echo "🏆 ¡Build completado exitosamente!"
     echo "📋 Archivos en JAR:"
-    jar tf RobocodeLabo.jar | grep -E '\.(class|properties)$' | sort
+    jar tf RobotGod.jar | grep -E '\.(class|properties)$' | sort
     echo
     echo "📊 Estadísticas del JAR:"
-    echo "  Tamaño: $(du -h RobocodeLabo.jar | cut -f1)"
-    echo "  Archivos: $(jar tf RobocodeLabo.jar | wc -l)"
+    echo "  Tamaño: $(du -h RobotGod.jar | cut -f1)"
+    echo "  Archivos: $(jar tf RobotGod.jar | wc -l)"
 else
     echo "❌ Error creando JAR"
     exit 1
