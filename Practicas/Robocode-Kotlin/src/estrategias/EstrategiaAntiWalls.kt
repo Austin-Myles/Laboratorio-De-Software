@@ -5,14 +5,13 @@ import robocode.WinEvent
 import java.lang.System.out
 import kotlin.math.*
 
+class EstrategiaAntiWalls : Estrategia {
 
-class EstrategiaAntiWalls() : Estrategia{
-
-    private lateinit var robot : NicoustinRobot
-    private var currentCorner : Int = 0
+    private lateinit var robot: NicoustinRobot
+    private var currentCorner: Int = 0
     private var inPosition: Boolean = false
     private var waitTurns: Int = 0
-    private var targetDetected : Boolean = false
+    private var targetDetected: Boolean = false
 
     override fun runB(robot: NicoustinRobot) {
         this.robot = robot
@@ -26,41 +25,40 @@ class EstrategiaAntiWalls() : Estrategia{
         FieldDetector.detectFieldSize(robot)
         out.println("ANTI-WALLS: Campo '${FieldDetector.getFieldWidth()}' x '${FieldDetector.getFieldHeight()}' detectado")
 
-        while (true){
-            if(!inPosition){
+        while (true) {
+            if (!inPosition) {
                 moveToCorner(currentCorner)
-            }
-            else{
-                cornetAmbush()
+            } else {
+                cornerAmbush()
             }
         }
     }
 
-    private fun moveToCorner(corner: Int){
-        val fieldWidth : Int = FieldDetector.getFieldWidth()
-        val fieldHeight : Int = FieldDetector.getFieldHeight()
-        val cornerDistance = kotlin.math.max(fieldWidth, fieldHeight) / 2
+    private fun moveToCorner(corner: Int) {
+        val fieldWidth: Int = FieldDetector.getFieldWidth()
+        val fieldHeight: Int = FieldDetector.getFieldHeight()
+        val cornerDistance = max(fieldWidth, fieldHeight) / 2
 
-        when (corner){
-            0 -> {robot.turnLeft((315 - robot.heading).toInt())
+        when (corner) {
+            0 -> {
+                robot.turnLeft((315 - robot.heading).toInt())
                 robot.ahead(cornerDistance)
                 robot.turnRight((135 - robot.heading).toInt())
-                //break??
             }
-            1 -> {robot.turnLeft((225 - robot.heading).toInt())
+            1 -> {
+                robot.turnLeft((225 - robot.heading).toInt())
                 robot.ahead(cornerDistance)
                 robot.turnRight((225 - robot.heading).toInt())
-                //break??
             }
-            2 -> {robot.turnLeft((135 - robot.heading).toInt())
+            2 -> {
+                robot.turnLeft((135 - robot.heading).toInt())
                 robot.ahead(cornerDistance)
                 robot.turnRight((315 - robot.heading).toInt())
-                //break??
             }
-            3 -> {robot.turnLeft((45 - robot.heading).toInt())
+            3 -> {
+                robot.turnLeft((45 - robot.heading).toInt())
                 robot.ahead(cornerDistance)
                 robot.turnRight((45 - robot.heading).toInt())
-                //break??
             }
         }
 
@@ -69,52 +67,51 @@ class EstrategiaAntiWalls() : Estrategia{
         out.println("ANTI-WALLS: En posición esquina '$corner' - Esperando target")
     }
 
-    private fun cornetAmbush(){
+    private fun cornerAmbush() {
         waitTurns++
 
-        if(!targetDetected){
+        if (!targetDetected) {
             robot.turnGunLeft(10)
         }
 
-        if(waitTurns > 50){
+        if (waitTurns > 50) {
             changeCorner()
         }
 
-        if(waitTurns % 20 == 0){
+        if (waitTurns % 20 == 0) {
             adjustPosition()
         }
     }
 
-    private fun changeCorner(){
+    private fun changeCorner() {
         currentCorner = (currentCorner + 1) % 4
         inPosition = false
         targetDetected = false
         out.println("ANTI-WALLS: Cambiando a esquina '$currentCorner'")
     }
 
-    private fun adjustPosition(){
+    private fun adjustPosition() {
         robot.ahead(20)
         robot.back(10)
     }
 
     override fun onScannedRobot() {
-        var distance : Int = robot.scannedDistance
-        var bearing : Int = robot.scannedBearing
+        val distance: Int = robot.scannedDistance
+        val bearing: Int = robot.scannedBearing
 
         targetDetected = true
 
-        if(distance < 200){
+        if (distance < 200) {
             robot.turnGunTo(robot.scannedAngle)
             robot.fire(3.0)
             out.println("ANTI-WALLS: ¡Emboscada exitosa! Target a '$distance' px")
-        }
-        else if (distance < 400){
+        } else if (distance < 400) {
             robot.turnGunTo(robot.scannedAngle)
             robot.fire(2.0)
             out.println("ANTI-WALLS: ¡Disparo de seguimiento a '$distance' px!")
         }
 
-        if(distance < 100){
+        if (distance < 100) {
             robot.turnRight(robot.scannedBearing + 180)
             robot.ahead(50)
             robot.turnRight(robot.scannedBearing)
@@ -140,19 +137,17 @@ class EstrategiaAntiWalls() : Estrategia{
         this.robot = robot
     }
 
-
     override fun onWin(event: WinEvent) {
         out.println("🏆 ANTI-WALLS: ¡Victoria táctica!")
 
         // Celebración tipo Walls - movimiento cuadrado
-        for (i in 0 until 4) {
+        repeat(4) {
             robot.turnGunRight(90)
             robot.ahead(25)
         }
     }
 
     override fun evalStrat(): String? {
-        // La evaluación la hace el robot, no la estrategia individual
         return null
     }
 }

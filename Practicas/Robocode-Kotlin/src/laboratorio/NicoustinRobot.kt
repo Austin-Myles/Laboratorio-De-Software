@@ -2,23 +2,21 @@ package laboratorio
 
 import robocode.*
 import estrategias.Estrategia
-import estrategias.StrategyEvaluator
-import estrategias.StrategyMapper
+import estrategas.Estratega
+import estrategas.EstrategaChill
 
 class NicoustinRobot() : JuniorRobot() {
-    private var estrategia : Estrategia? = null
-    private var stategyEvaluator : StrategyEvaluator? = null
-    private var currentSituationKey : String = "start"
+    private var estratega: Estratega
+    private var estrategia: Estrategia
 
     init {
-        stategyEvaluator = StrategyEvaluator(this)
-        estrategia = StrategyMapper.getStrategyForSituation(this)
-        currentSituationKey = StrategyMapper.getCurrentSituation()
+        estratega = EstrategaChill()
+        estrategia = estratega.chooseStrategy(this)
     }
 
-    constructor(estrategia: Estrategia, evaluator: StrategyEvaluator) : this() {
-        this.stategyEvaluator = evaluator
-        setEstrategia(estrategia)
+    constructor(estratega: Estratega) : this() {
+        this.estratega = estratega
+        setEstrategia(this.estratega.chooseStrategy(this))
     }
 
     fun setEstrategia(estrategia: Estrategia) {
@@ -26,49 +24,36 @@ class NicoustinRobot() : JuniorRobot() {
         estrategia.setRobot(this)
     }
 
-    fun setStrategyEvaluator(evaluator: StrategyEvaluator) {
-        this.stategyEvaluator = evaluator
+    fun setEstratega(estratega: Estratega) {
+        this.estratega = estratega
     }
 
-    private fun updateStrategy(){
-        if(estrategia != null && stategyEvaluator != null){
-            val newSituationKey = stategyEvaluator!!.evaluateStrategy()
-
-            if(stategyEvaluator!!.shouldChangeStrategy(currentSituationKey, newSituationKey)){
-                out.println("NICOUSTIN: Cambiando estrategia '$currentSituationKey' -> '$newSituationKey'")
-
-                currentSituationKey = newSituationKey
-                StrategyMapper.updateSituation(newSituationKey)
-                estrategia = StrategyMapper.getStrategyForSituation(this)
+    private fun updateStrategy() {
+        if (estratega != null) {
+            val newStrat = estratega.chooseStrategy(this)
+            if (newStrat != null && newStrat.javaClass != estrategia.javaClass) {
+                setEstrategia(newStrat)
             }
         }
     }
+
     override fun run() {
         updateStrategy()
-        estrategia?.runB(this)
+        estrategia.runB(this)
     }
 
-    /**
-     * Evento: Robot enemigo detectado
-     */
     override fun onScannedRobot() {
         updateStrategy()
-        estrategia?.onScannedRobot()
+        estrategia.onScannedRobot()
     }
 
-    /**
-     * Evento: Impacto de bala recibido
-     */
     override fun onHitByBullet() {
         updateStrategy()
-        estrategia?.onHitByBullet()
+        estrategia.onHitByBullet()
     }
 
-    /**
-     * Evento: Colisión con pared
-     */
     override fun onHitWall() {
         updateStrategy()
-        estrategia?.onHitWall()
+        estrategia.onHitWall()
     }
 }
