@@ -10,6 +10,4 @@ interface Estrategia {
     fun onHitWall()
     fun setRobot(robot: NicoustinRobot)
     fun onWin(event: WinEvent)
-
-    fun evalStrat(): String?
 }

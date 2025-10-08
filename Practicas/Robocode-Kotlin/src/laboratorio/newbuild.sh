@@ -72,6 +72,10 @@ fi
 if [ -n "$KOTLINC" ] && [ "$KOTLINC" != "" ]; then
     echo "🔨 Compilando archivos Kotlin con $KOTLINC..."
     $KOTLINC "$SRC_DIR/laboratorio/NicoustinRobot.kt" \
+             "$SRC_DIR/laboratorio/RobotConfig.kt" \
+             "$SRC_DIR/laboratorio/RobotState.kt" \
+             "$SRC_DIR/laboratorio/RobotConstants.kt" \
+             "$SRC_DIR/laboratorio/RobotExtensions.kt" \
              "$SRC_DIR/estrategias/"*.kt \
              "$SRC_DIR/estrategas/"*.kt \
              "$SRC_DIR/Main.kt" \

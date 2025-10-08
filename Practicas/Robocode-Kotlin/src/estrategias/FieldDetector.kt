@@ -25,18 +25,18 @@ object FieldDetector {
     fun detectFieldSize(robot: NicoustinRobot) {
         if (fieldMeasured) return
 
-        out.println("🔍 DETECTOR: Iniciando detección de campo...")
+        println("🔍 DETECTOR: Iniciando detección de campo...")
 
         try {
             measureByBouncing(robot)
             fieldMeasured = true
-            out.println("🔍 DETECTOR: Campo detectado - ${fieldWidth}x${fieldHeight}")
+            println("🔍 DETECTOR: Campo detectado - ${fieldWidth}x${fieldHeight}")
         } catch (e: Exception) {
             // Fallback a tamaños estándar
             fieldWidth = DEFAULT_WIDTH
             fieldHeight = DEFAULT_HEIGHT
             fieldMeasured = true
-            out.println("🔍 DETECTOR: Usando tamaño estándar - ${fieldWidth}x${fieldHeight}")
+            println("🔍 DETECTOR: Usando tamaño estándar - ${fieldWidth}x${fieldHeight}")
         }
     }
 
@@ -60,7 +60,7 @@ object FieldDetector {
 
         // Contar movimiento hasta la siguiente pared
         var moveDistance = 0
-        while (wallHitCount < 2 && moveDistance < 1000) {
+        while (moveDistance < 1000) {
             try {
                 robot.ahead(50) // Movimientos pequeños para medir
                 moveDistance += 50
@@ -90,7 +90,7 @@ object FieldDetector {
     }
 
     /**
-     * Método alternativo usando aproximación inteligente
+     * Metodo alternativo usando aproximación inteligente
      */
     @JvmStatic
     fun smartDetection(robot: NicoustinRobot) {
@@ -129,7 +129,7 @@ object FieldDetector {
         }
 
         fieldMeasured = true
-        out.println("🔍 DETECTOR: Estimación inteligente - ${fieldWidth}x${fieldHeight}")
+        println("🔍 DETECTOR: Estimación inteligente - ${fieldWidth}x${fieldHeight}")
     }
 
     @JvmStatic

@@ -5,18 +5,13 @@ import estrategias.Estrategia
 import estrategas.Estratega
 import estrategas.EstrategaChill
 
-class NicoustinRobot() : JuniorRobot() {
-    private var estratega: Estratega
+class NicoustinRobot(
+    private val estratega: Estratega = EstrategaChill()
+) : JuniorRobot() {
     private var estrategia: Estrategia
 
     init {
-        estratega = EstrategaChill()
         estrategia = estratega.chooseStrategy(this)
-    }
-
-    constructor(estratega: Estratega) : this() {
-        this.estratega = estratega
-        setEstrategia(this.estratega.chooseStrategy(this))
     }
 
     fun setEstrategia(estrategia: Estrategia) {
@@ -24,16 +19,10 @@ class NicoustinRobot() : JuniorRobot() {
         estrategia.setRobot(this)
     }
 
-    fun setEstratega(estratega: Estratega) {
-        this.estratega = estratega
-    }
-
     private fun updateStrategy() {
-        if (estratega != null) {
-            val newStrat = estratega.chooseStrategy(this)
-            if (newStrat != null && newStrat.javaClass != estrategia.javaClass) {
-                setEstrategia(newStrat)
-            }
+        val newStrat = estratega.chooseStrategy(this)
+        if (newStrat.javaClass != estrategia.javaClass) {
+            setEstrategia(newStrat)
         }
     }
 
