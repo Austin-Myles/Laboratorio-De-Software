@@ -1,0 +1,7 @@
+<nombreClase>Bean</nombreClase>
+<nombreAtributo>valor</nombreAtributo>
+<nombreValor>Testeo xd</nombreValor>
+<nombreAtributo>valor2</nombreAtributo>
+<nombreValor>14</nombreValor>
+<nombreAtributo>valor3</nombreAtributo>
+<nombreValor>3.1415</nombreValor>
