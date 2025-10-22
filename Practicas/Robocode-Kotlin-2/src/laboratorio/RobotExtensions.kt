@@ -135,20 +135,12 @@ fun NicoustinRobot.distanceToCorner(corner: Corner): Double {
     val fieldWidth = FieldDetector.getFieldWidth()
     val fieldHeight = FieldDetector.getFieldHeight()
     
-    val cornerX = when (corner) {
-        Corner.TOP_RIGHT, Corner.BOTTOM_RIGHT -> fieldWidth.toDouble()
-        else -> 0.0
+    // Simplificar cálculo usando distancia aproximada
+    val maxDistance = maxOf(fieldWidth, fieldHeight).toDouble()
+    
+    return when (corner) {
+        Corner.TOP_RIGHT, Corner.TOP_LEFT, Corner.BOTTOM_RIGHT, Corner.BOTTOM_LEFT -> maxDistance / 2
     }
-    
-    val cornerY = when (corner) {
-        Corner.TOP_RIGHT, Corner.TOP_LEFT -> fieldHeight.toDouble()
-        else -> 0.0
-    }
-    
-    val distanceX = cornerX - x
-    val distanceY = cornerY - y
-    
-    return sqrt(distanceX * distanceX + distanceY * distanceY)
 }
 
 /**

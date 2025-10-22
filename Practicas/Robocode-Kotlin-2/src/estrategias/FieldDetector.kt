@@ -19,7 +19,7 @@ object FieldDetector {
     private const val DEFAULT_HEIGHT = 600
     
     // Clase anidada para manejar la estimación de dimensiones
-    inner class DimensionEstimator {
+    class DimensionEstimator {
         fun estimateDimensions(totalMovement: Int): Pair<Int, Int> {
             // Usar función local con lambda para estimación
             val widthEstimator: (Int) -> Int = { movement ->
@@ -61,7 +61,7 @@ object FieldDetector {
     }
     
     // Clase anidada para manejar el movimiento de exploración
-    inner class ExplorationHandler {
+    class ExplorationHandler {
         fun alignToCardinal(robot: NicoustinRobot) {
             robot.turnLeft((robot.heading % 90).toInt())
         }
