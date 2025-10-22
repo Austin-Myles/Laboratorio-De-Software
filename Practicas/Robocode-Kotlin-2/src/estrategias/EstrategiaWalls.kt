@@ -4,9 +4,6 @@ import laboratorio.NicoustinRobot
 import laboratorio.turnToCardinal
 import laboratorio.adjustFromWall
 import laboratorio.celebrate
-import laboratorio.smartMove
-import laboratorio.smartTurn
-import laboratorio.smartScan
 import robocode.WinEvent
 
 class EstrategiaWalls : Estrategia {
@@ -14,110 +11,59 @@ class EstrategiaWalls : Estrategia {
     private var robot: NicoustinRobot? = null
     private var peek: Boolean = false
     private var moveAmount: Int = 0
-    
-    // Clase anidada para manejar la configuración inicial
-    inner class InitializationHandler {
-        fun setupColors() {
-            robot?.setColors(0, 0, 14)
-        }
-        
-        fun detectField() {
-            FieldDetector.detectFieldSize(robot!!)
-        }
-        
-        fun setupMovement() {
-            moveAmount = FieldDetector.getMaxFieldSize()
-            peek = false
-        }
-        
-        fun positionRobot() {
-            robot?.turnToCardinal()
-            robot?.ahead(moveAmount)
-        }
-        
-        fun setupGun() {
-            peek = true
-            robot?.turnGunRight(90)
-            robot?.turnRight(90)
-        }
-    }
-    
-    // Clase anidada para manejar el movimiento perimetral
-    inner class PerimeterMovement {
-        fun executeMovementCycle() {
-            // Usar función local con lambda para el ciclo de movimiento
-            val movementCycle: () -> Unit = {
-                peek = true
-                robot?.smartMove(moveAmount) { peek }
-                peek = false
-                robot?.smartTurn(90) { !peek }
-            }
-            
-            movementCycle()
-        }
-        
-        fun shouldContinueMoving(): Boolean = true // Siempre continuar en Walls
-    }
-    
-    // Clase anidada para manejar eventos de combate
-    inner class CombatHandler {
-        fun handleEnemyDetected() {
-            robot?.fire(2.0)
-            println("WALLS: Enemigo en perímetro - Disparando (peek: $peek)")
-        }
-        
-        fun handleHitReceived() {
-            println("🧱 WALLS: Impacto recibido - Manteniendo patrulla")
-        }
-        
-        fun handleWallContact() {
-            robot?.adjustFromWall()
-            println("🧱 WALLS: Contacto con pared - Ajustando posición perimetral")
-        }
-    }
-    
-    private val initHandler = InitializationHandler()
-    private val movementHandler = PerimeterMovement()
-    private val combatHandler = CombatHandler()
 
     override fun runB(robot: NicoustinRobot) {
         this.robot = robot
 
-        // Función local para inicialización completa
-        fun initializeStrategy() {
-            initHandler.setupColors()
-            println("WALLS: Iniciando patrulla perimetral")
-            initHandler.detectField()
-            initHandler.setupMovement()
-            println("WALLS: Campo detectado '${FieldDetector.getFieldWidth()}' x '${FieldDetector.getFieldHeight()}'")
-            initHandler.positionRobot()
-            initHandler.setupGun()
-        }
-        
-        // Función local para el loop principal con lambda
-        fun runMainLoop() {
-            val mainLoop: () -> Unit = {
-                while (movementHandler.shouldContinueMoving()) {
-                    movementHandler.executeMovementCycle()
-                }
-            }
-            mainLoop()
-        }
+        robot.setColors(0, 0, 14)
 
-        initializeStrategy()
-        runMainLoop()
+        println("WALLS: Iniciando patrulla perimetral")
+
+        // Detectar tamaño del campo primero
+        FieldDetector.detectFieldSize(robot)
+
+        // Inicialización EXACTA como Walls original
+        moveAmount = FieldDetector.getMaxFieldSize()
+        peek = false
+
+        println("WALLS: Campo detectado '${FieldDetector.getFieldWidth()}' x '${FieldDetector.getFieldHeight()}'")
+
+        // Posicionamiento inicial EXACTO como Walls
+        robot.turnToCardinal()
+
+        // Moverse hasta encontrar la pared
+        robot.ahead(moveAmount)
+
+        // Configuración inicial del cañón EXACTA
+        peek = true
+        robot.turnGunRight(90)
+        robot.turnRight(90)
+
+        // Loop principal
+        while (true) {
+            // Mirar antes de movernos cuando ahead() termine
+            peek = true
+            // Moverse por la pared - usar tamaño real de campo
+            robot.ahead(moveAmount)
+            // No mirar ahora
+            peek = false
+            // Girar a la siguiente pared
+            robot.turnRight(90)
+        }
     }
 
     override fun onScannedRobot() {
-        combatHandler.handleEnemyDetected()
+        robot?.fire(2.0)
+        println("WALLS: Enemigo en perímetro - Disparando (peek: $peek)")
     }
 
     override fun onHitByBullet() {
-        combatHandler.handleHitReceived()
+        println("🧱 WALLS: Impacto recibido - Manteniendo patrulla")
     }
 
     override fun onHitWall() {
-        combatHandler.handleWallContact()
+        robot?.adjustFromWall()
+        println("🧱 WALLS: Contacto con pared - Ajustando posición perimetral")
     }
 
     override fun setRobot(robot: NicoustinRobot) {
@@ -127,11 +73,7 @@ class EstrategiaWalls : Estrategia {
     override fun onWin(event: WinEvent) {
         println("🏆 WALLS: ¡Victoria perimetral!")
 
-        // Usar función local con lambda para celebración
-        val celebrationAction: () -> Unit = {
-            robot?.celebrate()
-        }
-        
-        celebrationAction()
+        // Celebración tipo Walls - movimiento cuadrado
+        robot?.celebrate()
     }
 }
